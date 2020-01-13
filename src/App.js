@@ -14,8 +14,7 @@ class App extends Component {
   render() {
 
     const { auth } = this.props
-    // const showLogin = (auth.isLoaded && auth.uid) ? <Navbar/> : <Redirect to='/login'/>
-    const showLogin = <Navbar/>
+    const showLogin = (auth.isLoaded && auth.uid) ? <Navbar/> : <Redirect to='/login'/>
     
     return (
       <BrowserRouter>
