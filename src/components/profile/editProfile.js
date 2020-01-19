@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Button, Form } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 import UploadPicture from './uploadPicture';
 import { updateProfile } from '../../store/actions/authActions'
 
@@ -38,30 +39,34 @@ export class EditProfile extends Component {
   render() {
 
     return (
-      <div className="container">
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Field>
-            <label>Name</label>
-            <input id="name" onChange={this.handleChange} placeholder={this.state.name} />
-          </Form.Field>
+      <div>
+        <Container text>
+          
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Field>
+              <label>Name</label>
+              <input id="name" onChange={this.handleChange} placeholder={this.state.name} />
+            </Form.Field>
 
-          <span>
-            Make my profile {' '}
-            <Dropdown
-              inline
-              onChange={this.handleChange}
-              options={[
-                {text:'public', value:'public'},
-                {text:'private', value:'private'}
-              ]}
-              value={this.state.privacy} />
-          </span>
+            <span>
+              Make my profile {' '}
+              <Dropdown
+                inline
+                onChange={this.handleChange}
+                options={[
+                  {text:'public', value:'public'},
+                  {text:'private', value:'private'}
+                ]}
+                value={this.state.privacy} />
+            </span>
+            <br />
+            <Button type='submit'>Submit</Button>
+          </Form>
+          
           <br />
-          <Button type='submit'>Submit</Button>
-        </Form>
-        
-        <br />
-        <UploadPicture uId={this.props.auth.uid} />
+          <UploadPicture uId={this.props.auth.uid} />
+
+        </Container>
       </div>
     )
   }

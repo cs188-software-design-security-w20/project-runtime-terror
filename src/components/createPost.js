@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../store/actions/postActions'
 import { Dropdown } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 
 // Semantic-UI
 // https://react.semantic-ui.com/
@@ -35,47 +36,51 @@ export class CreatePost extends Component {
 
     
     return (
-      <div className="container">
-        <form onSubmit={this.handleSubmit} className="white">
-          <h5 className="grey-text text-darken-3">Create Post</h5>
+      <div>
+        <Container text>
+          <form onSubmit={this.handleSubmit} className="white">
+            <h5 className="grey-text text-darken-3">Create Post</h5>
 
-            <div className="input-field">
-              <label htmlFor="song">Song</label>
-              <input type="text" value={this.state.song} id="song" onChange={this.handleChange} />
-            </div>
+              <div className="input-field">
+                <label htmlFor="song">Song</label>
+                <input type="text" value={this.state.song} id="song" onChange={this.handleChange} />
+              </div>
 
-            <div className="input-field">
-              <label htmlFor="rating">Rating (1 - 5)</label>
-              <input type="number" min="1" max="5" id="rating" className="materialize-textarea" onChange={this.handleChange} />
-            </div>
+              <div className="input-field">
+                <label htmlFor="rating">Rating (1 - 5)</label>
+                <input type="number" min="1" max="5" id="rating" className="materialize-textarea" onChange={this.handleChange} />
+              </div>
 
-            <div className="input-field">
-              <label htmlFor="comment">Comment</label>
-              <input type="text" id="comment" className="materialize-textarea" onChange={this.handleChange} />
-            </div>
-            
-            <div className="input-field">
-              <label htmlFor="URL">URL</label>
-              <input type="text" value={this.state.url} id="url" className="materialize-textarea" onChange={this.handleChange} />
-            </div>
+              <div className="input-field">
+                <label htmlFor="comment">Comment</label>
+                <input type="text" id="comment" className="materialize-textarea" onChange={this.handleChange} />
+              </div>
+              
+              <div className="input-field">
+                <label htmlFor="URL">URL</label>
+                <input type="text" value={this.state.url} id="url" className="materialize-textarea" onChange={this.handleChange} />
+              </div>
 
-            <span>
-              Make my post {' '}
-              <Dropdown
-                inline
-                onChange={this.handleChange}
-                options={[
-                  {text:'public', value:'public'},
-                  {text:'private', value:'private'}
-                ]}
-                value={this.state.privacy} />
-            </span>
+              <span>
+                Make my post {' '}
+                <Dropdown
+                  inline
+                  onChange={this.handleChange}
+                  options={[
+                    {text:'public', value:'public'},
+                    {text:'private', value:'private'}
+                  ]}
+                  value={this.state.privacy} />
+              </span>
 
-            <div className="input-field">
-              <button id="create_btn" className="btn pink lighten-1 z-depth-0">Create</button>
-            </div>
+              <div className="input-field">
+                <button id="create_btn" className="btn pink lighten-1 z-depth-0">Create</button>
+              </div>
 
-        </form>
+          </form>
+
+          <br /><br />
+        </Container>
       </div>
     )
   }

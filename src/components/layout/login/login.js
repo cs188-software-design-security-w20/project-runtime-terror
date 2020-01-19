@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { Image, Grid, GridRow } from 'semantic-ui-react'
-import LoginForm from './loginform'
+import LoginForm from './loginForm'
 
 
 class Login extends Component {
