@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Redirect} from 'react-router-dom'
-import {Sidebar, Menu, Segment, Header, Image, Input} from 'semantic-ui-react'
+import {Sidebar, Menu, Segment} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';

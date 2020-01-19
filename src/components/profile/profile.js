@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import Navbar from '../layout/navbar'
+import filler from '../layout/filler'
 
 export class Profile extends Component {
   render() {
     return (
       <div>
         <h1>Profile</h1>
-        <Navbar></Navbar>
+        {filler}
       </div>
     )
   }

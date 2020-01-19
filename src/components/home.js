@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import Navbar from './layout/navbar'
+import filler from './layout/filler'
 
 export class Home extends Component {
   render() {
     return (
       <div>
-        <Navbar></Navbar>
+        <h1>Home</h1>
+        {filler}
       </div>
     )
   }
