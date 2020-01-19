@@ -3,10 +3,10 @@ import { Redirect, Switch, Route, BrowserRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Home from './components/home'
 import Discover from './components/discover/discover'
-import Login from './components/layout/login_sm_ui/login'
+import Login from './components/layout/login/login'
 import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
-import SideNavbar from './sideNavbar';
+import SideNavbar from './components/layout/sideNavbar';
 import { Menu } from 'semantic-ui-react';
 
 
@@ -24,7 +24,11 @@ class App extends Component {
         <Route path='/profile'      component={Profile} />
       </Switch>
     )
-    const showLogin = (auth.isLoaded && auth.uid) ? <div className="App"><SideNavbar content={content}/></div> : <div className="App"><Menu><Menu.Item header>Project Runtime Terror</Menu.Item></Menu><Redirect to='/login'/>{content}</div>
+
+    const showLogin = (auth.isLoaded && auth.uid) ? 
+      <div className="App"><SideNavbar content={content}/></div> : 
+      <div className="App"><Menu><Menu.Item header>Runtime Terror</Menu.Item></Menu><Redirect to='/login'/>{content}</div>
+
     return (
       <BrowserRouter>
           { showLogin }

@@ -1,74 +1,45 @@
 import React, { Component } from 'react'
+import { Button, ButtonContent, Icon, Segment } from 'semantic-ui-react'
 import SignUp from './signup'
 import SignIn from './signin'
-import styled from 'styled-components'
 
 
-export class LoginForm extends Component {
-
-  state = {
-    signup: false,
-    signin: true
-  }
-
-  switch = (word) => {
-    var signup, signin;
-    if(word === "signup") {
-      signup = true; signin = false;
+// TODO: A lot of code overlap with SignUp/SignIn. Refactor into one class
+class LoginForm extends Component {
+    state = {
+        signing_up: false
     }
-    else {
-      signin = true; signup = false;
+
+    sign_up = (word) => {
+        this.setState( {signing_up: word})
     }
-    return this.setState( {signin: signin, signup: signup} )  
-  }
-  
 
-  render() {
+    render() {
+        const signing_area = this.state.signing_up ? <SignUp/> : <SignIn/>
+        return (
+            <div>
+                <Button.Group>
+                    <Button color='yellow' onClick={() => {this.sign_up(true)}}>
+                        <ButtonContent>
+                            <Icon name='plus'/>
+                            Sign Up
+                        </ButtonContent>
+                    </Button>
+                    <Button.Or/>
+                    <Button color='yellow' onClick={() => {this.sign_up(false)}}>
+                        <ButtonContent>
+                        <Icon name='music'/>
+                            Sign In
+                        </ButtonContent>
+                    </Button>
+                </Button.Group>
+                <Segment>
+                    {signing_area}
+                </Segment>
+                </div>
+        )
+    }
 
-    // https://www.styled-components.com/docs/basics
-    // https://materializecss.com/color.html
-    // https://materializecss.com/icons.html
-
-    const Button = styled.button` 
-      font-size: 1em;
-      margin-left: 20px;
-      margin-right: 20px;
-      padding: 0.6em 1em;
-      border: 2px solid palevioletred;
-      border-radius: 5px;
-    `;
-
-    const InFocused = styled(Button)`
-      color: ${this.state.signin ? "orange" : "white"};
-      background: ${this.state.signin ? "white" : "orange"};
-      border-radius: ${this.state.signin ? "1.2em" : ""};
-      border: ${this.state.signin ? "2px solid gray" : "2px solid orange"};
-    `;
-
-    const UpFocused = styled(Button)`
-      color: ${this.state.signup ? "orange" : "white"};
-      background: ${this.state.signup ? "white" : "orange"};
-      border-radius: ${this.state.signup ? "1.2em" : ""};
-      border: ${this.state.signin ? "2px solid orange" : "2px solid gray"};
-    `;
-
-    return (
-      <div>
-        <UpFocused as="a" className="waves-effect" onClick={ this.switch.bind(null, "signup")}>
-          <i className="material-icons left">add</i>
-          Sign Up
-        </UpFocused>
-        
-        <InFocused as="a" className="waves-effect" onClick={ this.switch.bind(null, "signin")}>
-          <i className="material-icons left">music_note</i>
-          Sign In
-        </InFocused>
-
-        { this.state.signup ? <SignUp /> : null}
-        { this.state.signin ? <SignIn /> : null}
-      </div>
-    )
-  }
 }
 
 

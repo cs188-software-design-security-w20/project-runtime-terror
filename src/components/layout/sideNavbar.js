@@ -4,7 +4,8 @@ import {Sidebar, Menu, Segment} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import { signOut } from './store/actions/authActions'
+import { signOut } from '../../store/actions/authActions'
+
 
 class SideNavbar extends Component {
     LOGIN = 'LOGIN'
@@ -35,7 +36,7 @@ class SideNavbar extends Component {
             <div>
                 <Menu>
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
-                    <Menu.Item header>Project Runtime Terror</Menu.Item>
+                    <Menu.Item header>Runtime Terror</Menu.Item>
                 </Menu>
                 <Sidebar.Pushable as={Segment}>
                     <Sidebar as={Menu} animation={'slide along'} direction={'left'} icon='labeled' inverted vertical visible={this.state.visible} width='thin'>
@@ -66,6 +67,7 @@ class SideNavbar extends Component {
     }
 }
 
+
 const mapStateToProps = (state) => {
     return {
       curUser: state.firestore.ordered.curUser,
@@ -74,6 +76,7 @@ const mapStateToProps = (state) => {
     }
 }
   
+
 const mapDispatchToProps = (dispatch) => {
     return {
         signOut: () => dispatch(signOut())

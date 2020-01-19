@@ -1,6 +1,8 @@
 import React from 'react'
 import {Segment, Header, Image} from 'semantic-ui-react'
 
+// TODO: Remove
+
 const filler = () => {
     return (
         <Segment basic>
