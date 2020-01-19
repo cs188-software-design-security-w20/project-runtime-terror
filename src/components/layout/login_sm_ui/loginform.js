@@ -10,7 +10,7 @@ class LoginForm extends Component {
         signing_up: false
     }
 
-    switch = (word) => {
+    sign_up = (word) => {
         this.setState( {signing_up: word})
     }
 
@@ -19,14 +19,14 @@ class LoginForm extends Component {
         return (
             <div>
                 <Button.Group>
-                    <Button color='yellow' onClick={() => {this.switch(true)}}>
+                    <Button color='yellow' onClick={() => {this.sign_up(true)}}>
                         <ButtonContent>
                             <Icon name='plus'/>
                             Sign Up
                         </ButtonContent>
                     </Button>
                     <Button.Or/>
-                    <Button color='yellow' onClick={() => {this.switch(false)}}>
+                    <Button color='yellow' onClick={() => {this.sign_up(false)}}>
                         <ButtonContent>
                         <Icon name='music'/>
                             Sign In
