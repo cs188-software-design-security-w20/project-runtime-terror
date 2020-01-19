@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
+import Navbar from './layout/navbar_2'
 
 export class Home extends Component {
   render() {
     return (
       <div>
-        <h1>Home</h1>
+        <Navbar></Navbar>
       </div>
     )
   }
