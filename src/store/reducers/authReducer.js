@@ -38,6 +38,22 @@ const authReducer = (state = initState, action) => {
         authError: action.err.message
       }
 
+    case 'USER_IMAGE': 
+      console.log('Updated user image', action.uId, action.imageUrl)
+      return state
+
+    case 'USER_IMAGE_ERROR': 
+      console.log('Update user image error', action.err)
+      return state
+
+    case 'USER_UPDATE': 
+      console.log('Updated user profile', action.uId, action.newInfo)
+      return state
+
+    case 'USER_UPDATE_ERROR': 
+      console.log('Update user profile error', action.err)
+      return state
+
     default:
       return state
   }
