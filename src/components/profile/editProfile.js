@@ -13,14 +13,16 @@ export class EditProfile extends Component {
     privacy: ''
   }
 
-  // TODO: UNSAFE - Implement Alternative
-  // https://stackoverflow.com/questions/32414308/updating-state-on-props-change-in-react-form
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.profile !== this.props.profile && nextProps.profile.name){
-      this.setState({
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.profile !== prevState.profile && nextProps.profile.name) {
+      return {
         name: nextProps.profile.name,
         privacy: nextProps.profile.privacy
-    })}
+      }
+    }
+    else {
+      return null;
+    }
   }
 
   handleChange = (e, opt) => {

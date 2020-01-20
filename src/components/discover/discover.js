@@ -8,7 +8,6 @@ export class Discover extends Component {
       <div>
         <Container text>
           <h1>Discover</h1>
-          {filler}
         </Container>
       </div>
     )

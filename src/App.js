@@ -12,15 +12,12 @@ import CreatePost from './components/createPost'
 import EditProfile from './components/profile/editProfile'
 import NotFound from './components/404'
 
-
 class App extends Component {
 
   state = { isLoading: true }
 
-  // Ensures the no other componenet loads before the Navbar
-  // TODO: UNSAFE! Find alternative 
-  componentWillReceiveProps() {
-    this.setState({isLoading: false})
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return { isLoading: false }
   }
 
   render() {
@@ -39,9 +36,10 @@ class App extends Component {
       </Switch>
     )
 
+    // Redirect forces user to load at Home page if logging in
     const showLogin = (auth.isLoaded && auth.uid) ? 
-      <div className="App"><SideNavbar content={content}/></div> : 
-      <div className="App"><Menu><Menu.Item header>Runtime Terror</Menu.Item></Menu><Redirect to='/login'/>{content}</div>
+      <SideNavbar content={content}/> : 
+      <div><Redirect to='/'/><Menu><Menu.Item header>Runtime Terror</Menu.Item></Menu><Login/></div>
 
     return (
       this.state.isLoading ? <h1>Loading...</h1> :

@@ -9,15 +9,19 @@ class Login extends Component {
 
     render() {
         const { auth } = this.props
-        if (auth.isLoaded && auth.uid)
+        if (auth.isLoaded && auth.uid) {
+            console.log('signed in?')
             return <Redirect to='/'/>
-        else
+        }
+        else {
+            console.log('loginform')
             return (
                 <Grid padded centered>
                     <Image src="/img/silhouette_2.png"/>
                     <GridRow> <LoginForm/> </GridRow>
                 </Grid>
             )
+        }
     }
 }
 
@@ -30,4 +34,3 @@ const mapStateToProps = (state) => {
   
 
 export default connect(mapStateToProps)(Login)
-  
