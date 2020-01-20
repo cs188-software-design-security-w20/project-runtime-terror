@@ -10,7 +10,6 @@ class Login extends Component {
     render() {
         const { auth } = this.props
         if (auth.isLoaded && auth.uid) {
-            console.log('signed in?')
             return <Redirect to='/'/>
         }
         else {
