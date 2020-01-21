@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { firestoreConnect } from 'react-redux-firebase';
 import { Sidebar, Menu, Segment } from 'semantic-ui-react'
 import { signOut } from '../../store/actions/authActions'
 
@@ -34,10 +32,8 @@ class SideNavbar extends Component {
     }
 
     render() {
-        const { auth, users } = this.props;
-        this.user = users && auth ? users.filter(user => user.id === auth.uid)[0] : null
-        let image = (this.user == null) ? null : <img src={this.user.imageUrl}/>
-        const isLoading = !(Array.isArray(this.props.users) && this.props.users.length > 0)
+        const { profile } = this.props;
+        let image = profile ? <img src={profile.imageUrl}/> : null
 
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
@@ -61,10 +57,8 @@ class SideNavbar extends Component {
                 </div>
             </div>
         )
-        if (isLoading) {
-            return (<div>Loading...</div>)
-        }
-        else if (this.state.redirect_target != null) {
+
+        if (this.state.redirect_target != null) {
             let to_link = this.state.targets[this.state.redirect_target]
             console.log("redirecting... to " + to_link)
             return (<div className='fullsize_div'><Redirect to={to_link}/>{output}</div>)
@@ -88,8 +82,7 @@ class SideNavbar extends Component {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        profile: state.firebase.profile,
-        users: state.firestore.ordered.users
+        profile: state.firebase.profile
     }
 }
   
@@ -101,7 +94,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect([{ collection: 'users' }])
-)(SideNavbar)
+export default connect(mapStateToProps, mapDispatchToProps)(SideNavbar)
