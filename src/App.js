@@ -17,7 +17,13 @@ class App extends Component {
   state = { isLoading: true }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    return { isLoading: false }
+    console.log(nextProps.auth)
+    if (nextProps.auth.isLoaded && (nextProps.auth.isEmpty || nextProps.auth.uid)) {
+      return { isLoading: false }
+    }
+    else {
+      return null
+    }
   }
 
   render() {
