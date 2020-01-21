@@ -24,19 +24,6 @@ class SideNavbar extends Component {
             FEED: '/feed'
         },
         visible: false,
-        isLoading: false
-    }
-
-    // TODO: Have a loading placeholder until the information arrives
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log(nextProps.users)
-
-        if (Array.isArray(nextProps.users) && nextProps.users.length > 0) {
-            return { isLoading: false }
-        }
-        else {
-            return null;
-        }
     }
 
     load = (target) => {
@@ -50,6 +37,7 @@ class SideNavbar extends Component {
         const { auth, users } = this.props;
         this.user = users && auth ? users.filter(user => user.id === auth.uid)[0] : null
         let image = (this.user == null) ? null : <img src={this.user.imageUrl}/>
+        const isLoading = !(Array.isArray(this.props.users) && this.props.users.length > 0)
 
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
@@ -73,19 +61,25 @@ class SideNavbar extends Component {
                 </div>
             </div>
         )
-        if (this.state.redirect_target != null) {
-            // TODO: Change from using setstate
-            console.log(this.state.redirect_target)
+        if (isLoading) {
+            return (<div>Loading...</div>)
+        }
+        else if (this.state.redirect_target != null) {
             let to_link = this.state.targets[this.state.redirect_target]
             console.log("redirecting... to " + to_link)
-            this.setState({redirect_target: null})
             return (<div className='fullsize_div'><Redirect to={to_link}/>{output}</div>)
-        }
-        else if (this.state.isLoading) {
-            return <div>Loading...</div>
         }
         else {            
             return output
+        }
+    }
+
+    // Clear redirect_target after render
+    componentDidUpdate() {
+        if (this.state.redirect_target != null) {
+            this.setState({
+                redirect_target: null
+            })
         }
     }
 }
