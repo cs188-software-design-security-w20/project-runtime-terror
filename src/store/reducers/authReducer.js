@@ -54,6 +54,14 @@ const authReducer = (state = initState, action) => {
       console.log('Update user profile error', action.err)
       return state
 
+    case 'SEND_FRIEND_REQUEST': 
+      console.log('Sent friend request', action.profile_user_id, action.logged_in_user_id)
+      return state
+
+    case 'SEND_FRIEND_REQUEST_ERROR': 
+      console.log('Send friend request error', action.err)
+      return state
+
     default:
       return state
   }

@@ -29,6 +29,7 @@ export const signUp = (newUser) => {
       firestore.collection('users').doc(resp.user.uid).set({
         name: newUser.name,
         friends: [],
+        friends_pending: [],
         privacy: 'public',
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/runtime-terror-1d144.appspot.com/o/profile_images%2Fdefault_pic.png?alt=media&token=74c12ae4-d4ca-4ad2-af25-c38c2206ee43'
       })
@@ -81,6 +82,23 @@ export const updateProfile = (uId, newInfo) => {
       dispatch({ type: 'USER_UPDATE', uId, newInfo })
     }).catch((err) => {
       dispatch({ type: 'USER_UPDATE_ERROR', err })
+    })
+  }
+}
+
+
+export const addFriend = (profile_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    firestore.collection('users').doc(profile_user_id).update({
+      friends_pending: firestore.FieldValue.arrayUnion(logged_in_user_id)
+    }).then(() => {
+      dispatch({ type: 'SEND_FRIEND_REQUEST', profile_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'SEND_FRIEND_REQUEST_ERROR', err })
     })
   }
 }
