@@ -22,7 +22,7 @@ class SignIn extends Component {
 
     render() {
         const { authError } = this.props
-
+        // TODO: Update the authError to be red
         return (
             <Form onSubmit={this.submit}>
                 <Form.Field>

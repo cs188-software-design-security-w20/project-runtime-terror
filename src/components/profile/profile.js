@@ -47,13 +47,11 @@ export class Profile extends Component {
 
 
     if (this.state.navigate === '/editprofile') {
-      this.navigate(null)
       return (
         <div><Redirect to={this.state.navigate}/><EditProfile/></div>
       )
     }
     else if (this.state.navigate === '/createpost') {
-      this.navigate(null)
       return (
         <div><Redirect to={this.state.navigate}/><CreatePost/></div>
       )
@@ -80,6 +78,11 @@ export class Profile extends Component {
         </Grid>
       </div>
     )
+  }
+
+  componentDidUpdate() {
+    if (this.state.navigate != null)
+      this.navigate(null)
   }
 }
 

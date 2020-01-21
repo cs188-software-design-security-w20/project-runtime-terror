@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
-import {Redirect} from 'react-router-dom'
-import {Sidebar, Menu, Segment, Grid, Container, Placeholder, Divider, Image } from 'semantic-ui-react'
-import { connect } from 'react-redux'
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom'
+import { firestoreConnect } from 'react-redux-firebase';
+import { Sidebar, Menu, Segment } from 'semantic-ui-react'
 import { signOut } from '../../store/actions/authActions'
 
 
@@ -22,7 +24,6 @@ class SideNavbar extends Component {
             FEED: '/feed'
         },
         visible: false,
-        isLoading: false
     }
 
     load = (target) => {
@@ -33,8 +34,10 @@ class SideNavbar extends Component {
     }
 
     render() {
-        const { profile } = this.props;
-        let image = profile ? <img src={profile.imageUrl}/> : null
+        const { auth, users } = this.props;
+        this.user = users && auth ? users.filter(user => user.id === auth.uid)[0] : null
+        let image = (this.user == null) ? null : <img src={this.user.imageUrl}/>
+        const isLoading = !(Array.isArray(this.props.users) && this.props.users.length > 0)
 
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
@@ -58,19 +61,25 @@ class SideNavbar extends Component {
                 </div>
             </div>
         )
-        if (this.state.redirect_target != null) {
-            // TODO: Change from using setstate
-            console.log(this.state.redirect_target)
+        if (isLoading) {
+            return (<div>Loading...</div>)
+        }
+        else if (this.state.redirect_target != null) {
             let to_link = this.state.targets[this.state.redirect_target]
             console.log("redirecting... to " + to_link)
-            this.setState({redirect_target: null})
             return (<div className='fullsize_div'><Redirect to={to_link}/>{output}</div>)
-        }
-        else if (this.state.isLoading) {
-            return <div>Loading...</div>
         }
         else {            
             return output
+        }
+    }
+
+    // Clear redirect_target after render
+    componentDidUpdate() {
+        if (this.state.redirect_target != null) {
+            this.setState({
+                redirect_target: null
+            })
         }
     }
 }
@@ -79,7 +88,8 @@ class SideNavbar extends Component {
 const mapStateToProps = (state) => {
     return {
         auth: state.firebase.auth,
-        profile: state.firebase.profile
+        profile: state.firebase.profile,
+        users: state.firestore.ordered.users
     }
 }
   
@@ -91,4 +101,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(SideNavbar)
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect([{ collection: 'users' }])
+)(SideNavbar)
