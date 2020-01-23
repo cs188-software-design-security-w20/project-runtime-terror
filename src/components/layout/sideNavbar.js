@@ -6,7 +6,6 @@ import { signOut } from '../../store/actions/authActions'
 
 
 class SideNavbar extends Component {
-    HOME = 'HOME'
     LOGIN = 'LOGIN'
     PROFILE = 'PROFILE'
     DISCOVER = 'DISCOVER'
@@ -15,11 +14,10 @@ class SideNavbar extends Component {
     state = {
         redirect_target: null,
         targets: {
-            HOME: '/',
+            FEED: '/',
             LOGIN: '/login',
             PROFILE: ('/profile/' + this.props.auth.uid),
-            DISCOVER: '/discover',
-            FEED: '/feed'
+            DISCOVER: '/discover'
         },
         visible: false,
     }
@@ -39,8 +37,8 @@ class SideNavbar extends Component {
             <div className='fullsize_div' id='sidebar_2'>
                 <Menu fixed='top'>
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
-                    <Menu.Item header onClick={() => {this.load(this.HOME)}}>Runtime Terror</Menu.Item>
-                    <Menu.Item>{image}</Menu.Item>
+                    <Menu.Item header onClick={() => {this.load(this.FEED)}}>Runtime Terror</Menu.Item>
+                    <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{image}</Menu.Item>
                 </Menu>
                 <div id='sidebar'>
                 <Sidebar.Pushable as={Segment}>
@@ -60,7 +58,6 @@ class SideNavbar extends Component {
 
         if (this.state.redirect_target != null) {
             let to_link = this.state.targets[this.state.redirect_target]
-            console.log("redirecting... to " + to_link)
             return (<div className='fullsize_div'><Redirect to={to_link}/>{output}</div>)
         }
         else {            
