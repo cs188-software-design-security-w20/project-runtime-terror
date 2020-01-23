@@ -20,6 +20,8 @@ const PostSummary = ({post, users}) => {
   
 
   return (
+
+    user && post ?
     <div>
       <Feed size='large'>
         <Feed.Event
@@ -30,7 +32,7 @@ const PostSummary = ({post, users}) => {
         />
       </Feed>
       <Divider />
-    </div>
+    </div> : null
   )
 }
 
