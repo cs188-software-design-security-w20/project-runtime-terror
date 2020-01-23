@@ -13,7 +13,6 @@ class Login extends Component {
             return <Redirect to='/'/>
         }
         else {
-            console.log('loginform')
             return (
                 <Grid padded centered>
                     <Image src="/img/silhouette_2.png"/>

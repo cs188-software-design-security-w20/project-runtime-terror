@@ -20,7 +20,7 @@ export class CreatePost extends Component {
   }
 
   handleChange = (e, opt) => {
-    opt ? this.setState({['privacy']: opt.value}) :
+    opt ? this.setState({privacy: opt.value}) :
     this.setState({
       [e.target.id]: e.target.value
     })
@@ -33,8 +33,6 @@ export class CreatePost extends Component {
   }
 
   render() {
-
-    
     return (
       <div>
         <Container text>

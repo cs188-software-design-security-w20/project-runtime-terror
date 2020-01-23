@@ -15,9 +15,7 @@ export class EditProfile extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("Previous: ", prevState.profile)
     if(nextProps.profile !== prevState.profile && nextProps.profile.name) {
-      console.log("Next: ", nextProps.profile)
       return {
         name: nextProps.profile.name,
         privacy: nextProps.profile.privacy,
@@ -30,8 +28,7 @@ export class EditProfile extends Component {
   }
 
   handleChange = (e, opt) => {
-    console.log(opt)
-    opt ? this.setState({['privacy']: opt.value}) :
+    opt ? this.setState({privacy: opt.value}) :
     this.setState({
       [e.target.id]: e.target.value
     })
@@ -44,7 +41,6 @@ export class EditProfile extends Component {
   }
 
   render() {
-    console.log(this.state.privacy)
     return (
       <div>
         <Container text>
