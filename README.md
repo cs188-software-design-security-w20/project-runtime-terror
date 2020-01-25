@@ -20,9 +20,42 @@ $ npm install
 $ npm start
 ```
 
+
 ### Team
 * Shabnam Bahmanyar
 * Henry Bui
 * Brian Du
 * Tejas Kasturi
 * Prabhjot Singh
+
+
+### Directory Structure
+    project-runtime-terror
+    ├── ...
+    ├── spotify_server      # Spotify Auhentication Server
+    │   └── ...
+    ├── src
+    │   ├── components      # All frontend components used to display web pages 
+    |   |   ├── ...
+    |   |   ├── discover            # Discover Page
+    |   |   ├── feed                # Feed Page
+    |   |   ├── layout              # Login and Navbar
+    |   |   ├── profile             # Profile Page
+    |   |   ├── 404.js              # 404 Status Page 
+    |   |   ├── createPost.js       # Create Post Page
+    |   |   └── ...
+    │   ├── config
+    |   |   └── fbConfig.js # Firebase configuration
+    │   ├── store
+    |   |   ├── actions     # Backend methods used to communicate with Firebase
+    |   |   |   ├── authActions.js  # User Authentication
+    |   |   |   └── postActions.js  # Posts Database
+    │   |   ├── reducers    # Backend reducers keeping track of state changes
+    |   |   |   ├── authReducer.js  
+    |   |   |   ├── postReducer.js 
+    |   |   |   └── rootReducer.js  # Combines Other Reducers
+    │   ├── App.js      # Main Component responsible for routing
+    │   ├── index.css   # Main CSS File
+    │   └── ...
+    ├── README.md   # The file you are currently reading 
+    └── ...
