@@ -3,20 +3,6 @@ import { Container, Grid, Search, Header, Divider, Breadcrumb, Label } from 'sem
 import SongGrid, { SongInfo } from './songGrid'
 
 export class Discover extends Component {
-  state = {
-    genres: [
-      'Rock',
-      'Pop',
-      'Jazz',
-      'Hip hop',
-      'Rap',
-      'Country'
-    ]
-  }
-
-  searchGenres = (e, data) => {
-    // TODO: Handle user choosing a genre (filter searches on page? or perform a search?)
-  }
 
   expandSection = (e, data) => {
     // TODO: Handle user choosing to see more from a section
@@ -63,12 +49,6 @@ export class Discover extends Component {
             song_info={top}
             expand={this.expandSection}
           />
-
-        <Container>
-          <Header as='h2' textAlign='left'>Genres</Header>
-          <Divider/>
-          {genres}
-        </Container>
 
         <br/>
       </div>
