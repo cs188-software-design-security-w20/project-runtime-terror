@@ -9,11 +9,6 @@ export class Discover extends Component {
   }
 
   render() {
-    const genres = this.state.genres.map(
-      (currValue, index) => 
-        <Label as='a' onClick={this.searchGenres} key={index}>{currValue}</Label>
-    )
-
     // TODO: Replace with actual data
     let fake_songs = [
       new SongInfo('hello world 0', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 3),
