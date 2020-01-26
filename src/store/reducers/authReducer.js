@@ -62,6 +62,30 @@ const authReducer = (state = initState, action) => {
       console.log('Send friend request error', action.err)
       return state
 
+    case 'REMOVE_FRIEND': 
+      console.log('Sent friend request', action.profile_user_id, action.logged_in_user_id)
+      return state
+
+    case 'REMOVE_FRIEND_ERROR': 
+      console.log('Send friend request error', action.err)
+      return state
+
+    case 'ACCEPT_FRIEND': 
+      console.log('Accepted friend request', action.friend_user_id, action.logged_in_user_id)
+      return state
+
+    case 'ACCEPT_FRIEND_ERROR': 
+      console.log('Accept friend request error', action.err)
+      return state
+
+    case 'REJECT_FRIEND': 
+      console.log('Rejected friend request', action.friend_user_id, action.logged_in_user_id)
+      return state
+
+    case 'REJECT_FRIEND_ERROR': 
+      console.log('Reject friend request error', action.err)
+      return state
+
     default:
       return state
   }

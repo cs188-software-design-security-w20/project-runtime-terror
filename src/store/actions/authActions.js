@@ -102,3 +102,72 @@ export const addFriend = (profile_user_id, logged_in_user_id) => {
     })
   }
 }
+
+
+export const removeFriend = (profile_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    // Remove logged in user from profile user's friends list
+    firestore.collection('users').doc(profile_user_id).update({
+      friends: firestore.FieldValue.arrayRemove(logged_in_user_id)
+    })
+    
+    // Remove profile user from logged in user's friends list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends: firestore.FieldValue.arrayRemove(profile_user_id)
+    }).then(() => {
+      dispatch({ type: 'REMOVE_FRIEND', profile_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'REMOVE_FRIEND_ERROR', err })
+    })
+  }
+}
+
+
+export const acceptFriend = (friend_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    // Remove incoming friend from logged in user's friends_pending list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends_pending: firestore.FieldValue.arrayRemove(friend_user_id)
+    })
+    
+    // Add incoming friend to logged in user's friends list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends: firestore.FieldValue.arrayUnion(friend_user_id)
+    })
+
+    // Add logged in user to incoming friend's friends list
+    firestore.collection('users').doc(friend_user_id).update({
+      friends: firestore.FieldValue.arrayUnion(logged_in_user_id)
+    }).then(() => {
+      dispatch({ type: 'ACCEPT_FRIEND', friend_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'ACCEPT_FRIEND_ERROR', err })
+    })
+  }
+}
+
+
+export const rejectFriend = (friend_user_id, logged_in_user_id) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    // Remove incoming friend from logged in user's friends_pending list
+    firestore.collection('users').doc(logged_in_user_id).update({
+      friends_pending: firestore.FieldValue.arrayRemove(friend_user_id)
+    }).then(() => {
+      dispatch({ type: 'REJECT_FRIEND', friend_user_id, logged_in_user_id})
+    }).catch((err) => {
+      dispatch({ type: 'REJECT_FRIEND_ERROR', err })
+    })
+  }
+}
