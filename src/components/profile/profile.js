@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom'
 import { Grid, GridRow, Image, Button, Segment, Tab, GridColumn } from 'semantic-ui-react'
-import { addFriend } from '../../store/actions/authActions'
+import { addFriend, removeFriend, acceptFriend } from '../../store/actions/authActions'
 import EditProfile from './editProfile';
 import CreatePost from '../createPost';
 import PostList from '../feed/postList'
@@ -38,10 +38,19 @@ export class Profile extends Component {
 
   render() {
 
-    const { auth, users, match, curProfilePosts } = this.props;
+    const { auth, users, profile, match, curProfilePosts } = this.props;
     const curProfileUser = users && auth ? users.filter(user => user.id === match.params.id)[0] : null
     const imageUrl = curProfileUser ? curProfileUser.imageUrl : null
+    var friendButton = match && auth ? <Button onClick={() => {this.props.addFriend(match.params.id, auth.uid)}}>Add Friend</Button> : null
     
+    if (auth && curProfileUser && curProfileUser.friends_pending.includes(auth.uid))
+      friendButton = <Button>Friend Request Sent</Button>
+    else if (auth && curProfileUser && curProfileUser.friends.includes(auth.uid) && match)
+      friendButton = <Button onClick={() => {this.props.removeFriend(match.params.id, auth.uid)}}>Remove Friend</Button>
+    else if (profile && profile.friends_pending && auth && match && profile.friends_pending.includes(match.params.id))
+      friendButton = <Button onClick={() => {this.props.acceptFriend(match.params.id, auth.uid)}}>Accept Friend Request</Button>
+    
+      
     this.state.posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
     this.state.friends_content = curProfileUser ? <div> <FriendList users={users} friends={curProfileUser.friends} /> </div> : null
 
@@ -57,6 +66,7 @@ export class Profile extends Component {
       )
     }
 
+
     return (
       <div>
         <Grid centered padded='vertically'>
@@ -70,7 +80,7 @@ export class Profile extends Component {
                   <Button floated='left' onClick={() => {this.navigate('/editprofile')}}>Edit profile</Button>
                   <Button floated='right' icon='plus' onClick={() => {this.navigate('/createpost')}}/>
                 </div> :
-                  <Button onClick={() => {this.props.addFriend(match.params.id, auth.uid)}}>Add Friend</Button>
+                  friendButton
               }
             </Segment>
           </GridRow>
@@ -91,6 +101,7 @@ const mapStateToProps = (state) => {
   return {
     curProfilePosts: state.firestore.ordered.curProfilePosts,
     auth: state.firebase.auth,
+    profile: state.firebase.profile,
     users: state.firestore.ordered.users
   }
 }
@@ -98,7 +109,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addFriend: (profile_user_id, logged_in_user_id) => dispatch(addFriend(profile_user_id, logged_in_user_id))
+    addFriend: (profile_user_id, logged_in_user_id) => dispatch(addFriend(profile_user_id, logged_in_user_id)),
+    removeFriend: (profile_user_id, logged_in_user_id) => dispatch(removeFriend(profile_user_id, logged_in_user_id)),
+    acceptFriend: (friend_user_id, logged_in_user_id) => dispatch(acceptFriend(friend_user_id, logged_in_user_id))
   }
 }
 

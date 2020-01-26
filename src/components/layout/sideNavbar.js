@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { Sidebar, Menu, Segment } from 'semantic-ui-react'
+import { Sidebar, Menu, Segment, Label } from 'semantic-ui-react'
 import { signOut } from '../../store/actions/authActions'
 
 
@@ -10,6 +10,7 @@ class SideNavbar extends Component {
     PROFILE = 'PROFILE'
     DISCOVER = 'DISCOVER'
     FEED = 'FEED'
+    REQUESTS = 'REQUESTS'
     
     state = {
         redirect_target: null,
@@ -17,7 +18,8 @@ class SideNavbar extends Component {
             FEED: '/',
             LOGIN: '/login',
             PROFILE: ('/profile/' + this.props.auth.uid),
-            DISCOVER: '/discover'
+            DISCOVER: '/discover',
+            REQUESTS: '/requests'
         },
         visible: false,
     }
@@ -31,7 +33,12 @@ class SideNavbar extends Component {
 
     render() {
         const { profile } = this.props;
-        let image = profile ? <img src={profile.imageUrl}/> : null
+        let image = profile ? <img src={profile.imageUrl} alt=""/> : null
+        let requests_num = profile && profile.friends_pending ? profile.friends_pending.length : 0
+        const requests = (requests_num > 0) ? 
+            <Menu.Item onClick={() => {this.load(this.REQUESTS)}}>Friend Requests:
+                <Label color='teal'>{requests_num} </Label>
+            </Menu.Item> : null
 
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
@@ -39,6 +46,7 @@ class SideNavbar extends Component {
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
                     <Menu.Item header onClick={() => {this.load(this.FEED)}}>Runtime Terror</Menu.Item>
                     <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{image}</Menu.Item>
+                    {requests}
                 </Menu>
                 <div id='sidebar'>
                 <Sidebar.Pushable as={Segment}>

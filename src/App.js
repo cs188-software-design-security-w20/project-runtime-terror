@@ -6,10 +6,12 @@ import Discover from './components/discover/discover'
 import Login from './components/layout/login/login'
 import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
+import PendingList from './components/profile/pendingList'
 import SideNavbar from './components/layout/sideNavbar';
 import CreatePost from './components/createPost'
 import EditProfile from './components/profile/editProfile'
 import NotFound from './components/404'
+
 
 class App extends Component {
 
@@ -35,6 +37,7 @@ class App extends Component {
         <Route path='/profile/:id'  component={Profile} />
         <Route path='/createpost'   component={CreatePost} />
         <Route path='/editprofile'  component={EditProfile} />
+        <Route path='/requests'     component={PendingList} />
         <Route                      component={NotFound} />
       </Switch>
     )

@@ -9,11 +9,11 @@ const FriendList = ({friends, users}) => {
         {(friends && friends.length === 0) ? <h3>No Friends Yet :(</h3> : null }
         { friends && users && friends.map(friend => {
           const friend_info = users.filter(user => user.id === friend)[0]
-          const summary = <Link to={'/profile/' + friend}> {friend_info.name} </Link>
+          const summary = friend_info ? <Link to={'/profile/' + friend}> {friend_info.name} </Link> : null
           return (
             <Feed key={friend}>
               <Feed.Event
-                image={friend_info.imageUrl}
+                image={friend_info ? friend_info.imageUrl : null}
                 summary={summary}
               />
               <Divider fitted/>
