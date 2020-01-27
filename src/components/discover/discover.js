@@ -2,7 +2,46 @@ import React, { Component } from 'react'
 import { Container, Grid, Search, Header, Divider, Breadcrumb, Label } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 
+import SpotifyWebApi from 'spotify-web-api-js';
+const spotifyApi = new SpotifyWebApi();
+
 export class Discover extends Component {
+  constructor(){
+    super();
+    const params = this.getHashParams();
+    const token = params.access_token;
+    if (token) {
+      spotifyApi.setAccessToken(token);
+    }
+    this.state = {
+      loggedIn: token ? true : false,
+      nowPlaying: { name: 'Not Checked', albumArt: '' }
+    }
+  }
+
+  getHashParams() {
+    var hashParams = {};
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    e = r.exec(q)
+    while (e) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+       e = r.exec(q);
+    }
+    return hashParams;
+  }
+
+  getNowPlaying(){
+    spotifyApi.getMyCurrentPlaybackState()
+      .then((response) => {
+        this.setState({
+          nowPlaying: { 
+              name: response.item.name, 
+              albumArt: response.item.album.images[0].url
+            }
+        });
+      })
+  }
 
   expandSection = (e, data) => {
     // TODO: Handle user choosing to see more from a section
@@ -27,6 +66,19 @@ export class Discover extends Component {
             <Search fluid/>
           </Grid>
 
+          <a href='http://localhost:8888' > Login to Spotify </a>
+          <div>
+            Now Playing: { this.state.nowPlaying.name }
+          </div>
+          <div>
+            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
+          </div>
+          { this.state.loggedIn &&
+            <button onClick={() => this.getNowPlaying()}>
+              Check Now Playing
+            </button>
+          }
+
           <SongSection
             title='Recent Songs'
             song_info={recents}
@@ -47,6 +99,7 @@ export class Discover extends Component {
 
         <br/>
       </div>
+
     )
   }
 }
