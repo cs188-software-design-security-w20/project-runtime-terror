@@ -15,7 +15,7 @@ export class CreatePost extends Component {
     song: '',
     comment: '',
     rating: '',
-    privacy: 'public',
+    privacy: this.props.profile ? this.props.profile.privacy : '',
     url: ''
   }
 
@@ -33,6 +33,7 @@ export class CreatePost extends Component {
   }
 
   render() {
+
     return (
       <div>
         <Container text>
@@ -85,6 +86,13 @@ export class CreatePost extends Component {
 }
  
 
+const mapStateToProps = (state) => {
+  return {
+      profile: state.firebase.profile
+  }
+}
+
+
 const mapDispatchToProps = (dispatch) => {
   return {
     createPost: (Post) => dispatch(createPost(Post))
@@ -92,4 +100,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-export default  connect(null, mapDispatchToProps)(CreatePost);
+export default  connect(mapStateToProps, mapDispatchToProps)(CreatePost);
