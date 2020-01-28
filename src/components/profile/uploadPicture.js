@@ -47,7 +47,7 @@ export class UploadPicture extends Component {
             accept="image/*"
             name="image"
             filename={ this.uId }
-            storageRef={firebase.storage().ref('users')}
+            storageRef={firebase.storage().ref('profile_images')}
             onUploadStart={this.handleUploadStart}
             onUploadError={this.handleUploadError}
             onUploadSuccess={this.handleUploadSuccess}

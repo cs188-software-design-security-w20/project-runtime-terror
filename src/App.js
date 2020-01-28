@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Switch, Route, BrowserRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Menu } from 'semantic-ui-react';
-import Home from './components/home'
+import { Menu, Loader } from 'semantic-ui-react';
 import Discover from './components/discover/discover'
 import Login from './components/layout/login/login'
 import Feed from './components/feed/feed'
@@ -17,7 +16,6 @@ class App extends Component {
   state = { isLoading: true }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log(nextProps.auth)
     if (nextProps.auth.isLoaded && (nextProps.auth.isEmpty || nextProps.auth.uid)) {
       return { isLoading: false }
     }
@@ -31,10 +29,9 @@ class App extends Component {
     const { auth } = this.props
     const content = (
       <Switch>
-        <Route exact path='/'       component={Home} />
-        <Route path='/discover'     component={Discover} />
+        <Route exact path='/'       component={Feed} />
         <Route path='/login'        component={Login} />
-        <Route path='/feed'         component={Feed} />
+        <Route path='/discover'     component={Discover} />
         <Route path='/profile/:id'  component={Profile} />
         <Route path='/createpost'   component={CreatePost} />
         <Route path='/editprofile'  component={EditProfile} />
@@ -42,13 +39,13 @@ class App extends Component {
       </Switch>
     )
 
-    // Redirect forces user to load at Home page if logging in
+    // Redirect forces user to load at Discover page if already logged in
     const showLogin = (auth.isLoaded && auth.uid) ? 
       <SideNavbar content={content}/> : 
       <div><Redirect to='/'/><Menu><Menu.Item header>Runtime Terror</Menu.Item></Menu><Login/></div>
 
     return (
-      this.state.isLoading ? <h1>Loading...</h1> :
+      this.state.isLoading ? <div className='fullsize_div'> <Loader active size='massive'>Loading</Loader> </div>:
       <BrowserRouter>
           { showLogin }
       </BrowserRouter>
