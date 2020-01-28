@@ -72,7 +72,7 @@ export default compose(
       {
         collection: 'posts',
         storeAs: 'friendsPosts',
-        where: ['authorId', 'in', props.currentFriendsList.length == 0 ? ['0'] : props.currentFriendsList],
+        where: ['authorId', 'in', props.currentFriendsList == null || props.currentFriendsList.length == 0 ? ['0'] : props.currentFriendsList],
       },
       { 
         collection: 'posts',
