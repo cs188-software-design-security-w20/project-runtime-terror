@@ -1,22 +1,37 @@
 import React, { Component } from 'react'
-import { Container, Grid, Search, Header, Divider, Breadcrumb, Label } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Divider, Breadcrumb, Button } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 
 import SpotifyWebApi from 'spotify-web-api-js';
 const spotifyApi = new SpotifyWebApi();
 
 export class Discover extends Component {
+    
+  shouldComponentUpdate(prevProps, prevState) {
+    if (this.state.playlists !== prevState.playlists) {
+      console.log('true')
+      return true;
+    }
+    return false;
+  }
+
   constructor(){
     super();
+
     const params = this.getHashParams();
     const token = params.access_token;
     if (token) {
       spotifyApi.setAccessToken(token);
     }
-    this.state = {
-      loggedIn: token ? true : false,
-      nowPlaying: { name: 'Not Checked', albumArt: '' }
-    }
+
+    this.getPlaylists();
+    console.log(this.state.playlists);
+  }
+
+  state = {
+    loggedIn: this.token ? true : false,
+    nowPlaying: { name: 'Not Checked', albumArt: '' },
+    playlists: []
   }
 
   getHashParams() {
@@ -43,11 +58,24 @@ export class Discover extends Component {
       })
   }
 
+  getPlaylists(){
+    spotifyApi.getUserPlaylists()
+    .then((data) => {
+      console.log(data);
+      this.setState({playlists: data});
+      return;
+    }, function(err) {
+      console.error(err);
+    });
+    }
+
   expandSection = (e, data) => {
     // TODO: Handle user choosing to see more from a section
   }
 
   render() {
+    console.log(this.props.match)
+
     // TODO: Replace with actual data
     let fake_songs = [
       new SongInfo('hello world 0', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 3),
@@ -58,7 +86,7 @@ export class Discover extends Component {
     const recents = fake_songs
     const trending = fake_songs
     const top = fake_songs
-
+    console.log(this.state)
     return (
       <div>
         <h1>Discover</h1>
@@ -73,21 +101,23 @@ export class Discover extends Component {
           <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
           </div>
-          { this.state.loggedIn &&
-            <button onClick={() => this.getNowPlaying()}>
+          { this.state.loggedIn ?
+            <Button onClick={() => this.getNowPlaying()}>
               Check Now Playing
-            </button>
+            </Button>
+            :
+            null
           }
 
           <SongSection
-            title='Recent Songs'
+            title='My Playlists'
             song_info={recents}
             expand={this.expandSection}
           />
 
           <SongSection
-            title='Trending'
-            song_info={trending}
+            title='Recent Songs'
+            song_info={recents}
             expand={this.expandSection}
           />
 
