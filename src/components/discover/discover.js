@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Container, Grid, Search, Header, Divider, Breadcrumb, Button } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
-
+import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
 const spotifyApi = new SpotifyWebApi();
+
 
 export class Discover extends Component {
     
@@ -74,7 +76,11 @@ export class Discover extends Component {
   }
 
   render() {
-    console.log(this.props.match)
+
+    // Adds token to user's database
+    // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
+    if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
+      this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
     // TODO: Replace with actual data
     let fake_songs = [
@@ -157,4 +163,19 @@ class SongSection extends Component {
   }
 }
 
-export default Discover
+
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth
+  }
+}
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateToken: (uId, token) => dispatch(updateToken(uId, token))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Discover)

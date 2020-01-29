@@ -31,6 +31,7 @@ export const signUp = (newUser) => {
         friends: [],
         friends_pending: [],
         privacy: 'public',
+        spotify_token: '',
         imageUrl: 'https://firebasestorage.googleapis.com/v0/b/runtime-terror-1d144.appspot.com/o/profile_images%2Fdefault_pic.png?alt=media&token=74c12ae4-d4ca-4ad2-af25-c38c2206ee43'
       })
     }).then(() => {
@@ -168,6 +169,22 @@ export const rejectFriend = (friend_user_id, logged_in_user_id) => {
       dispatch({ type: 'REJECT_FRIEND', friend_user_id, logged_in_user_id})
     }).catch((err) => {
       dispatch({ type: 'REJECT_FRIEND_ERROR', err })
+    })
+  }
+}
+
+export const updateToken = (uId, token) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+
+    // Make async call to database
+    const firestore = getFirestore()
+
+    firestore.collection('users').doc(uId).update({
+      spotify_token: token
+    }).then(() => {
+      dispatch({ type: 'SPOTIFY_TOKEN', uId, token })
+    }).catch((err) => {
+      dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
     })
   }
 }
