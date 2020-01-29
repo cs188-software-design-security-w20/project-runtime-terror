@@ -54,13 +54,11 @@ export class Profile extends Component {
       
     this.state.posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
     this.state.friends_content = curProfileUser ? 
-          ((currentFriendsList && match && currentFriendsList.includes(match.params.id)) || (auth && match && auth["uid"] == match.params.id) ? 
+          ((currentFriendsList && match && match.params && match.params.id && currentFriendsList.includes(match.params.id)) 
+            || (auth && match && match.params && match.params.id && auth["uid"] == match.params.id) ? 
             <div> <FriendList users={users} friends={curProfileUser.friends} /> </div> :
             <div> <FriendList users={users} friends={[]} /> </div>)
              : null
-//props.match.params.id != props.auth["uid"] && ?
-if(curProfileUser && curProfileUser.friends)
-  console.log(curProfileUser.friends)
 
     if (this.state.navigate === '/editprofile') {
       return (
@@ -105,7 +103,7 @@ if(curProfileUser && curProfileUser.friends)
 
 
 const mapStateToProps = (state) => {
-    //creates the friends list for us to query
+    //creates the friends list for the current user
     var currentFriendsList = ["0"]; //This is the dummy value
     for(var key in state.firestore.ordered.users)
     {
@@ -114,6 +112,8 @@ const mapStateToProps = (state) => {
         currentFriendsList = state.firestore.ordered.users[key]["friends"];
       }
     }
+    
+    //This creates the posts on the profile that we are looking at
     if(state.firestore.ordered.curPrivatePosts != null && state.firestore.ordered.curPublicPosts != null){
       var curProfilePosts = state.firestore.ordered.curPrivatePosts.concat(state.firestore.ordered.curPublicPosts).sort(function (a, b) {
         return b.createdAt["seconds"] - a.createdAt["seconds"];
@@ -150,7 +150,6 @@ const mapDispatchToProps = (dispatch) => {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect(props => [
-    //get the private posts if they are friends OR they are the current user
     { collection: 'users' },
       { 
       collection: 'posts',
@@ -159,6 +158,8 @@ export default compose(
         ['authorId', '==', props.match.params.id],
         [
         'privacy', '==', 
+        //get the private posts if they are friends OR they are the current user
+        //Otherwise we can only see their public posts
         props.currentFriendsList == null || (props.match.params.id != props.auth["uid"] && !props.currentFriendsList.includes(props.match.params.id))?
         '0':'private'
         ],
@@ -168,6 +169,7 @@ export default compose(
       collection: 'posts',
       storeAs: 'curPublicPosts',
       where: [
+      //Alway just get the public posts, and we will add them together and sort them by their start time
         ['authorId', '==', props.match.params.id],
         ['privacy', '==','public'],
       ],
