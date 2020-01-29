@@ -83,7 +83,8 @@ export default compose(
         collection: 'posts',
         storeAs: 'privatePersonalPosts',
         where: [
-          ['authorId', '==', props.auth["uid"]],
+          ['authorId', '==', props.auth["uid"]
+        ],
           ['privacy', '==', 'private']
         ]
       },
