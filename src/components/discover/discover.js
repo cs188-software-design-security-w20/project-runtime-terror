@@ -10,7 +10,7 @@ const spotifyApi = new SpotifyWebApi();
 export class Discover extends Component {
     
   shouldComponentUpdate(prevProps, prevState) {
-    if (this.state.playlists !== prevState.playlists) {
+    if (this.state.searchedTracks !== prevState.searchedTracks) {
       console.log('true')
       return true;
     }
@@ -26,14 +26,14 @@ export class Discover extends Component {
       spotifyApi.setAccessToken(token);
     }
 
-    this.getPlaylists();
-    console.log(this.state.playlists);
+    this.searchTracks('Love');
   }
 
   state = {
     loggedIn: this.token ? true : false,
     nowPlaying: { name: 'Not Checked', albumArt: '' },
-    playlists: []
+    searchedTracks: [],
+    value: ''
   }
 
   getHashParams() {
@@ -60,16 +60,17 @@ export class Discover extends Component {
       })
   }
 
-  getPlaylists(){
-    spotifyApi.getUserPlaylists()
-    .then((data) => {
-      console.log(data);
-      this.setState({playlists: data});
-      return;
-    }, function(err) {
-      console.error(err);
-    });
-    }
+  searchTracks(keyword){
+    spotifyApi.searchTracks(keyword)
+      .then((data) => {
+        console.log('Search by ', keyword, data);
+        this.setState({searchedTracks: data});
+        return;
+      }, function(err) {
+        console.error(err);
+      });
+  }
+  
 
   expandSection = (e, data) => {
     // TODO: Handle user choosing to see more from a section
@@ -97,7 +98,10 @@ export class Discover extends Component {
       <div>
         <h1>Discover</h1>
           <Grid centered>
-            <Search fluid/>
+            <Search fluid
+              
+              placeholder='search  for songs'
+            />
           </Grid>
 
           <a href='http://localhost:8888' > Login to Spotify </a>
@@ -114,12 +118,6 @@ export class Discover extends Component {
             :
             null
           }
-
-          <SongSection
-            title='My Playlists'
-            song_info={recents}
-            expand={this.expandSection}
-          />
 
           <SongSection
             title='Recent Songs'
