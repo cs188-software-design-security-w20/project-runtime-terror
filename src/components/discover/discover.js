@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid, Search, Header, Divider, Breadcrumb, Button } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Segment, Divider, Breadcrumb, Button } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
-const spotifyApi = new SpotifyWebApi();
+import _ from 'lodash'
 
+const spotifyApi = new SpotifyWebApi();
+const initialState = { results: [], value: '' }
 
 export class Discover extends Component {
-    
+  state = initialState;
+
   shouldComponentUpdate(prevProps, prevState) {
     if (this.state.searchedTracks !== prevState.searchedTracks) {
       console.log('true')
@@ -26,14 +29,14 @@ export class Discover extends Component {
       spotifyApi.setAccessToken(token);
     }
 
-    this.searchTracks('Love');
   }
 
   state = {
     loggedIn: this.token ? true : false,
     nowPlaying: { name: 'Not Checked', albumArt: '' },
     searchedTracks: [],
-    value: ''
+    value: '',
+    results: []
   }
 
   getHashParams() {
@@ -70,6 +73,27 @@ export class Discover extends Component {
         console.error(err);
       });
   }
+
+  handleResultSelect = (e, { result }) => {
+    this.setState({ value: result.title })
+
+  }
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState(initialState)
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      // const isMatch = (result) => re.test(result.title)
+
+      this.setState({
+        results: this.searchTracks(re)
+      })
+      
+    }, 300)
+  }
   
 
   expandSection = (e, data) => {
@@ -77,6 +101,7 @@ export class Discover extends Component {
   }
 
   render() {
+    const { value, results } = this.state
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -93,13 +118,15 @@ export class Discover extends Component {
     const recents = fake_songs
     const trending = fake_songs
     const top = fake_songs
-    console.log(this.state)
+    
     return (
       <div>
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              
+              onSearchChange={this.handleSearchChange}
+              value={value}
+              results={results}
               placeholder='search  for songs'
             />
           </Grid>
