@@ -9,32 +9,29 @@ const spotifyApi = new SpotifyWebApi();
 
 export class Discover extends Component {
     
-  shouldComponentUpdate(prevProps, prevState) {
-    if (this.state.searchedTracks !== prevState.searchedTracks) {
-      console.log('true')
-      return true;
-    }
-    return false;
-  }
-
   constructor(){
     super();
 
     const params = this.getHashParams();
     const token = params.access_token;
+    const getToken = spotifyApi.getAccessToken();
     if (token) {
       spotifyApi.setAccessToken(token);
     }
+    else if(getToken){
+      spotifyApi.setAccessToken(getToken);
 
-    this.searchTracks('Love');
-  }
+    }
 
-  state = {
-    loggedIn: this.token ? true : false,
-    nowPlaying: { name: 'Not Checked', albumArt: '' },
-    searchedTracks: [],
-    value: ''
+    this.state = {
+      loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
+      nowPlaying: { name: 'Not Checked', albumArt: '' },
+      searchedTracks: [],
+      value: ''
+    }
+
   }
+  
 
   getHashParams() {
     var hashParams = {};
@@ -51,12 +48,22 @@ export class Discover extends Component {
   getNowPlaying(){
     spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
-        this.setState({
-          nowPlaying: { 
-              name: response.item.name, 
-              albumArt: response.item.album.images[0].url
-            }
-        });
+        if (response == '' || response.item.name == null) {
+          this.setState({
+            nowPlaying: { 
+                name: 'Nothing is playing right now', 
+                albumArt: ''
+              }
+          })
+        }
+        else {
+          this.setState({
+            nowPlaying: { 
+                name: response.item.name, 
+                albumArt: response.item.album.images[0].url
+              }
+          })
+        }
       })
   }
 
@@ -93,24 +100,25 @@ export class Discover extends Component {
     const recents = fake_songs
     const trending = fake_songs
     const top = fake_songs
-    console.log(this.state)
+    
     return (
       <div>
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              
               placeholder='search  for songs'
             />
           </Grid>
 
           <a href='http://localhost:8888' > Login to Spotify </a>
+          
           <div>
             Now Playing: { this.state.nowPlaying.name }
           </div>
           <div>
             <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
           </div>
+
           { this.state.loggedIn ?
             <Button onClick={() => this.getNowPlaying()}>
               Check Now Playing
@@ -118,7 +126,7 @@ export class Discover extends Component {
             :
             null
           }
-
+          
           <SongSection
             title='Recent Songs'
             song_info={recents}
