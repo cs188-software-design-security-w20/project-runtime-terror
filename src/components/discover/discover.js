@@ -12,13 +12,13 @@ const initialState = { results: [], value: '' }
 export class Discover extends Component {
   state = initialState;
 
-  shouldComponentUpdate(prevProps, prevState) {
-    if (this.state.results !== prevState.results) {
-      console.log('true')
-      return true;
-    }
-    return false;
-  }
+  // shouldComponentUpdate(prevProps, prevState) {
+  //   if (this.state.results !== prevState.results) {
+  //     console.log('true')
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   constructor(){
     super();
