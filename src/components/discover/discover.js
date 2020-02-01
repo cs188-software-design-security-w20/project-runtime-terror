@@ -13,7 +13,7 @@ export class Discover extends Component {
   state = initialState;
 
   shouldComponentUpdate(prevProps, prevState) {
-    if (this.state.searchedTracks !== prevState.searchedTracks) {
+    if (this.state.results !== prevState.results) {
       console.log('true')
       return true;
     }
@@ -68,7 +68,7 @@ export class Discover extends Component {
       .then((data) => {
         console.log('Search by ', keyword, data);
         this.setState({searchedTracks: data});
-        return;
+        return data;
       }, function(err) {
         console.error(err);
       });
@@ -76,7 +76,7 @@ export class Discover extends Component {
 
   handleResultSelect = (e, { result }) => {
     this.setState({ value: result.title })
-
+    //TODO: redirect to /createpost with song name & URL filled
   }
 
   handleSearchChange = (e, { value }) => {
@@ -88,11 +88,13 @@ export class Discover extends Component {
       const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
       // const isMatch = (result) => re.test(result.title)
 
+
       this.setState({
         results: this.searchTracks(re)
       })
-      
     }, 300)
+
+    console.log(this.state.results)  //why is this undefined??
   }
   
 
@@ -124,7 +126,7 @@ export class Discover extends Component {
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              onSearchChange={this.handleSearchChange}
+              onSearchChange={_.debounce(this.handleSearchChange, 500)}
               value={value}
               results={results}
               placeholder='search  for songs'
