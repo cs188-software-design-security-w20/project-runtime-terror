@@ -7,18 +7,9 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
-const initialState = { results: [], value: '' }
+
 
 export class Discover extends Component {
-  state = initialState;
-
-  shouldComponentUpdate(prevProps, prevState) {
-    if (this.state.results !== prevState.results) {
-      console.log('true')
-      return true;
-    }
-    return false;
-  }
 
   constructor(){
     super();
@@ -29,14 +20,14 @@ export class Discover extends Component {
       spotifyApi.setAccessToken(token);
     }
 
-  }
+    this.state = {
+      loggedIn: token ? true : false,
+      nowPlaying: { name: 'Not Checked', albumArt: '' },
+      searchedTracks: [],
+      value: '',
+      results: []
+    }
 
-  state = {
-    loggedIn: this.token ? true : false,
-    nowPlaying: { name: 'Not Checked', albumArt: '' },
-    searchedTracks: [],
-    value: '',
-    results: []
   }
 
   getHashParams() {
@@ -66,7 +57,7 @@ export class Discover extends Component {
   searchTracks(keyword){
     spotifyApi.searchTracks(keyword)
       .then((data) => {
-        console.log('Search by ', keyword, data);
+        console.log('Search: ', keyword, data);
         this.setState({searchedTracks: data});
         return data;
       }, function(err) {
@@ -83,16 +74,13 @@ export class Discover extends Component {
     this.setState({ value })
 
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState)
+      if (this.state.value.length < 1) return this.setState({value: '', results: []})
 
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      // const isMatch = (result) => re.test(result.title)
-
-
+      this.searchTracks(value)
       this.setState({
-        results: this.searchTracks(re)
+        results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
       })
-    }, 300)
+    }, 100)
 
     console.log(this.state.results)  //why is this undefined??
   }
@@ -104,6 +92,8 @@ export class Discover extends Component {
 
   render() {
     const { value, results } = this.state
+    const results_names = results ? results.map(x => x.name) : []
+    console.log(results_names)
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -126,12 +116,14 @@ export class Discover extends Component {
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              onSearchChange={_.debounce(this.handleSearchChange, 500)}
+              onSearchChange={_.debounce(this.handleSearchChange, 100)}
               value={value}
-              results={results}
+              results={results_names}
               placeholder='search  for songs'
             />
           </Grid>
+
+          <Button onClick={()=>console.log(this.state)}>Press to see state</Button> <br />
 
           <a href='http://localhost:8888' > Login to Spotify </a>
           <div>
