@@ -47,16 +47,20 @@ const mapStateToProps = (state) => {
   })
   }
 
+  //This is if we wanted to allow personal private posts to be shown on explore page
   //find a way to combine publicPosts and privatePersonalPosts for the explore page 
-  if(state.firestore.ordered.publicPosts != null && state.firestore.ordered.privatePersonalPosts != null){
-  var sortedExploreArray = state.firestore.ordered.publicPosts.concat(state.firestore.ordered.privatePersonalPosts)
-                                                    .sort(function (a, b) {
-    return b.createdAt["seconds"] - a.createdAt["seconds"];
-  })
-  }
+  // if(state.firestore.ordered.publicPosts != null && state.firestore.ordered.privatePersonalPosts != null){
+  // var sortedExploreArray = state.firestore.ordered.publicPosts.concat(state.firestore.ordered.privatePersonalPosts)
+  //                                                   .sort(function (a, b) {
+  //   return b.createdAt["seconds"] - a.createdAt["seconds"];
+  // })
+
+  
+  // }
 
   return {
-    explorePosts: sortedExploreArray,
+    // explorePosts: sortedExploreArray,
+    explorePosts: state.firestore.ordered.publicPosts,
     friendsPosts: sortedFriendsArray,
     auth: state.firebase.auth,
     users: state.firestore.ordered.users,
@@ -79,14 +83,14 @@ export default compose(
         storeAs: 'publicPosts',
         where: ['privacy', '==', 'public'],
       },
-      {
-        collection: 'posts',
-        storeAs: 'privatePersonalPosts',
-        where: [
-          ['authorId', '==', props.auth["uid"]
-        ],
-          ['privacy', '==', 'private']
-        ]
-      },
+      // {
+      //   collection: 'posts',
+      //   storeAs: 'privatePersonalPosts',
+      //   where: [
+      //     ['authorId', '==', props.auth["uid"]
+      //   ],
+      //     ['privacy', '==', 'private']
+      //   ]
+      // },
   ])
 )(Feed);
