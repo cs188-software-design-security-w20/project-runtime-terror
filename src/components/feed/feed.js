@@ -54,13 +54,12 @@ const mapStateToProps = (state) => {
   //                                                   .sort(function (a, b) {
   //   return b.createdAt["seconds"] - a.createdAt["seconds"];
   // })
-
-  
   // }
+  if(state.firestore.ordered.publicPosts)
+    var sortedExploreArray = state.firestore.ordered.publicPosts.sort(function (a, b) {return b.createdAt["seconds"] - a.createdAt["seconds"];})
 
   return {
-    // explorePosts: sortedExploreArray,
-    explorePosts: state.firestore.ordered.publicPosts,
+    explorePosts: sortedExploreArray,
     friendsPosts: sortedFriendsArray,
     auth: state.firebase.auth,
     users: state.firestore.ordered.users,
