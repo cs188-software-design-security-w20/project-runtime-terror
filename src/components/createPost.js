@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../store/actions/postActions'
-import { Dropdown } from 'semantic-ui-react'
-import { Container } from 'semantic-ui-react'
+import { Form, Header, Container } from 'semantic-ui-react'
 
 // Semantic-UI
 // https://react.semantic-ui.com/
@@ -16,11 +15,22 @@ export class CreatePost extends Component {
     comment: '',
     rating: '',
     privacy: this.props.profile ? this.props.profile.privacy : '',
-    url: ''
+    url: '',
+    toggleState: 'private'
   }
 
-  handleChange = (e, opt) => {
-    opt ? this.setState({privacy: opt.value}) :
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.profile && nextProps.profile.isLoaded && nextProps.profile.privacy !== undefined && prevState.privacy === undefined) {
+      return {
+        privacy: nextProps.profile.privacy
+      }
+    }
+    else {
+      return null
+    }
+  }
+
+  handleChange = (e) => {
     this.setState({
       [e.target.id]: e.target.value
     })
@@ -29,58 +39,61 @@ export class CreatePost extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.props.createPost(this.state)
-    this.props.history.push('/feed')
+    this.props.history.push('/')
+  }
+
+  toggle = () => {
+    this.setState({toggleState: (this.state.toggleState === 'private') ? 'public' : 'private', privacy: (this.state.toggleState === 'private') ? 'public' : 'private'})
   }
 
   render() {
 
     return (
-      <div>
-        <Container text>
-          <form onSubmit={this.handleSubmit} className="white">
-            <h5 className="grey-text text-darken-3">Create Post</h5>
+      <Container text>
+        <Header as='h2'>Create Post</Header>
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Group widths='equal'>
+            <Form.Input
+              id='song'
+              label='Song'
+              name='Song'
+              onChange={this.handleChange}
+            />
+            <Form.Input
+              id='url'
+              label='URL'
+              name='URL'
+              onChange={this.handleChange}
+            />
+          </Form.Group>
+          <Form.Radio
+              label={this.state.toggleState}
+              toggle
+              onClick={this.toggle}
+            />
+          <Form.Select
+            id='rating'
+            label='Rating'
+            options={
+              [
+                {text: '1', value: 1},
+                {text: '2', value: 2},
+                {text: '3', value: 3},
+                {text: '4', value: 4},
+                {text: '5', value: 5}
+              ]
+            }
+          />
 
-              <div className="input-field">
-                <label htmlFor="song">Song</label>
-                <input type="text" value={this.state.song} id="song" onChange={this.handleChange} />
-              </div>
-
-              <div className="input-field">
-                <label htmlFor="rating">Rating (1 - 5)</label>
-                <input type="number" min="1" max="5" id="rating" className="materialize-textarea" onChange={this.handleChange} />
-              </div>
-
-              <div className="input-field">
-                <label htmlFor="comment">Comment</label>
-                <input type="text" id="comment" className="materialize-textarea" onChange={this.handleChange} />
-              </div>
-              
-              <div className="input-field">
-                <label htmlFor="URL">URL</label>
-                <input type="text" value={this.state.url} id="url" className="materialize-textarea" onChange={this.handleChange} />
-              </div>
-
-              <span>
-                Make my post {' '}
-                <Dropdown
-                  inline
-                  onChange={this.handleChange}
-                  options={[
-                    {text:'public', value:'public'},
-                    {text:'private', value:'private'}
-                  ]}
-                  value={this.state.privacy} />
-              </span>
-
-              <div className="input-field">
-                <button id="create_btn" className="btn pink lighten-1 z-depth-0">Create</button>
-              </div>
-
-          </form>
-
-          <br /><br />
-        </Container>
-      </div>
+          <Form.TextArea
+            id='comment'
+            label='Comment'
+            name='Comment'
+            onChange={this.handleChange}
+          />
+          <Form.Button type='submit' color='green'>Create Post</Form.Button>
+        </Form>
+      </Container>
     )
   }
 }

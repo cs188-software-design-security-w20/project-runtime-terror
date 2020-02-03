@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Grid, Search, Header, Divider, Breadcrumb, Label } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Divider, Breadcrumb } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 
 export class Discover extends Component {
@@ -22,7 +22,7 @@ export class Discover extends Component {
 
     return (
       <div>
-        <h1>Discover</h1>
+        <Header as='h1'>Discover</Header>
           <Grid centered>
             <Search fluid/>
           </Grid>
