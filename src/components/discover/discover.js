@@ -24,9 +24,13 @@ export class Discover extends Component {
       nowPlaying: { name: 'Not Checked', albumArt: '' },
       searchedTracks: [],
       value: '',
-      results: []
+      results: [],
+      newReleases: [],
+      recentlyPlayed: []
     }
 
+    this.getNewReleases();
+    this.getRecentSongs();
   }
 
   getHashParams() {
@@ -51,6 +55,27 @@ export class Discover extends Component {
             }
         });
       })
+  }
+
+  getNewReleases(){
+    spotifyApi.getNewReleases({ limit : 4, offset: 0, country: 'US' })
+      .then((data) => {
+        this.setState({newReleases: data});
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
+  }
+  
+  getRecentSongs(){
+    spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 })
+      .then((data) => {
+        this.setState({recentlyPlayed: data});
+        console.log(data);
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
   }
 
   searchTracks(keyword){
@@ -91,8 +116,6 @@ export class Discover extends Component {
 
   render() {
     const { value, results } = this.state
-    const results_names = results ? results.map(x => x.name) : []
-    console.log(results_names)
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -107,12 +130,11 @@ export class Discover extends Component {
       new SongInfo('hello world 3', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 5)
     ]
     var searchResults = []
-    const recents = fake_songs
-    const trending = fake_songs
-    const top = fake_songs
+    var newAlbums = []
+    const recents = []
+    const top = []
 
 
-    //TODO: replace image address with real data
     //TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
       var i;
@@ -121,10 +143,13 @@ export class Discover extends Component {
           let title = results[i].name
           let artist = results[i].artists[0].name
           let album = results[i].album.name
-          searchResults.push(new SongInfo(title, artist, album, '/img/silhouette_1.png', 0))
+          let url = results[i].album.images[0].url
+          searchResults.push(new SongInfo(title, artist, album, url, 0))
         }
       }
     } 
+    
+
 
     
     return (
@@ -160,6 +185,13 @@ export class Discover extends Component {
             song_info={searchResults}
             expand={this.expandSection}
           />
+
+          {/* 
+          <SongSection
+            title='New Releases'
+            song_info={newAlbums}
+            expand={this.expandSection}
+          /> */}
 
           <SongSection
             title='Recent Songs'
