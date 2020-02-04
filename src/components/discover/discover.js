@@ -7,18 +7,8 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
-const initialState = { results: [], value: '' }
 
 export class Discover extends Component {
-  state = initialState;
-
-  // shouldComponentUpdate(prevProps, prevState) {
-  //   if (this.state.results !== prevState.results) {
-  //     console.log('true')
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   constructor(){
     super();
@@ -29,14 +19,14 @@ export class Discover extends Component {
       spotifyApi.setAccessToken(token);
     }
 
-  }
+    this.state = {
+      loggedIn: token ? true : false,
+      nowPlaying: { name: 'Not Checked', albumArt: '' },
+      searchedTracks: [],
+      value: '',
+      results: []
+    }
 
-  state = {
-    loggedIn: this.token ? true : false,
-    nowPlaying: { name: 'Not Checked', albumArt: '' },
-    searchedTracks: [],
-    value: '',
-    results: []
   }
 
   getHashParams() {
@@ -66,7 +56,7 @@ export class Discover extends Component {
   searchTracks(keyword){
     spotifyApi.searchTracks(keyword)
       .then((data) => {
-        console.log('Search by ', keyword, data);
+        console.log('Search: ', keyword, data);
         this.setState({searchedTracks: data});
         return data;
       }, function(err) {
@@ -83,16 +73,13 @@ export class Discover extends Component {
     this.setState({ value })
 
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState)
+      if (this.state.value.length < 1) return this.setState({value: '', results: []})
 
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      // const isMatch = (result) => re.test(result.title)
-
-
+      this.searchTracks(value)
       this.setState({
-        results: this.searchTracks(re)
+        results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
       })
-    }, 300)
+    }, 100)
 
     console.log(this.state.results)  //why is this undefined??
   }
@@ -104,6 +91,8 @@ export class Discover extends Component {
 
   render() {
     const { value, results } = this.state
+    const results_names = results ? results.map(x => x.name) : []
+    console.log(results_names)
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -117,21 +106,39 @@ export class Discover extends Component {
       new SongInfo('hello world 2', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 2),
       new SongInfo('hello world 3', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 5)
     ]
+    var searchResults = []
     const recents = fake_songs
     const trending = fake_songs
     const top = fake_songs
+
+
+    //TODO: replace image address with real data
+    //TODO: get number of stars and place for last argument
+    if (results !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (results.length > i) {
+          let title = results[i].name
+          let artist = results[i].artists[0].name
+          let album = results[i].album.name
+          searchResults.push(new SongInfo(title, artist, album, '/img/silhouette_1.png', 0))
+        }
+      }
+    } 
+
     
     return (
       <div>
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              onSearchChange={_.debounce(this.handleSearchChange, 500)}
+              onSearchChange={_.debounce(this.handleSearchChange, 100)}
               value={value}
-              results={results}
               placeholder='search  for songs'
             />
           </Grid>
+
+          <Button onClick={()=>console.log(this.state)}>Press to see state</Button> <br />
 
           <a href='http://localhost:8888' > Login to Spotify </a>
           <div>
@@ -147,6 +154,12 @@ export class Discover extends Component {
             :
             null
           }
+
+          <SongSection
+            title='Search Results'
+            song_info={searchResults}
+            expand={this.expandSection}
+          />
 
           <SongSection
             title='Recent Songs'
