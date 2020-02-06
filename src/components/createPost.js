@@ -14,9 +14,9 @@ export class CreatePost extends Component {
     song: '',
     comment: '',
     rating: '',
-    privacy: this.props.profile ? this.props.profile.privacy : '',
+    privacy: this.props.profile ? this.props.profile.privacy : 'private',
     url: '',
-    toggleState: 'private'
+    toggleState: 'private'    // TODO: set initial state of toggle based on whether or not privacy !== 'private' or not and remove toggleState
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -36,14 +36,28 @@ export class CreatePost extends Component {
     })
   }
 
+  handleRating = (e, {value}) => {
+    this.setState({
+      'rating': value
+    })
+  }
+
   handleSubmit = (e) => {
     e.preventDefault()
-    this.props.createPost(this.state)
+    this.props.createPost({
+      song: this.state.song,
+      comment: this.state.comment,
+      rating: this.state.rating,
+      privacy: this.state.toggleState,
+      url: this.state.url
+    })
     this.props.history.push('/')
   }
 
   toggle = () => {
-    this.setState({toggleState: (this.state.toggleState === 'private') ? 'public' : 'private', privacy: (this.state.toggleState === 'private') ? 'public' : 'private'})
+    this.setState({
+      toggleState: (this.state.toggleState === 'private') ? 'public' : 'private',
+    })
   }
 
   render() {
@@ -67,13 +81,14 @@ export class CreatePost extends Component {
             />
           </Form.Group>
           <Form.Radio
-              label={this.state.toggleState}
+              label={this.state.toggleState === 'private' ? 'Private' : 'Public'}
               toggle
               onClick={this.toggle}
             />
           <Form.Select
             id='rating'
             label='Rating'
+            onChange={this.handleRating}
             options={
               [
                 {text: '1', value: 1},
