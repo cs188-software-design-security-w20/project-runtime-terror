@@ -18,7 +18,7 @@ class SideNavbar extends Component {
             FEED: '/',
             LOGIN: '/login',
             PROFILE: ('/profile/' + this.props.auth.uid),
-            DISCOVER: '/discover/' + '',
+            DISCOVER: '/discover/',
             REQUESTS: '/requests'
         },
         visible: false,
@@ -26,7 +26,7 @@ class SideNavbar extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.profile.isLoaded && ('/discover/' + nextProps.profile.spotify_token) !== prevState.targets.DISCOVER)
-            return {targets: {DISCOVER: '/discover/' + nextProps.profile.spotify_token}}
+            return {targets: {...prevState.targets, DISCOVER: '/discover/' + nextProps.profile.spotify_token}}
     }
     
     load = (target) => {

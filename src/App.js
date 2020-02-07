@@ -32,7 +32,7 @@ class App extends Component {
       <Switch>
         <Route exact path='/'       component={Feed} />
         <Route path='/login'        component={Login} />
-        <Route path='/discover/'    component={Discover} />   {/* TODO: Change to /discover/:id in the future */}
+        <Route path='/discover/'    component={Discover} />
         <Route path='/profile/:id'  component={Profile} />
         <Route path='/createpost'   component={CreatePost} />
         <Route path='/requests'     component={PendingList} />
