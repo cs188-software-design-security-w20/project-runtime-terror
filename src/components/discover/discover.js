@@ -26,11 +26,13 @@ export class Discover extends Component {
       value: '',
       results: [],
       newReleases: [],
-      recentlyPlayed: []
+      recentlyPlayed: [],
+      topTracks: []
     }
 
     this.getNewReleases();
     this.getRecentSongs();
+    this.getTopTracks();
   }
 
   getHashParams() {
@@ -60,7 +62,7 @@ export class Discover extends Component {
   getNewReleases(){
     spotifyApi.getNewReleases({ limit : 4, offset: 0, country: 'US' })
       .then((data) => {
-        this.setState({newReleases: data});
+        this.setState({newReleases: data.albums.items});
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
@@ -68,10 +70,23 @@ export class Discover extends Component {
   }
   
   getRecentSongs(){
-    spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 })
+    spotifyApi.getMyRecentlyPlayedTracks({ limit: 4 })
       .then((data) => {
-        this.setState({recentlyPlayed: data});
-        console.log(data);
+        this.setState({
+          recentlyPlayed: data.items
+        });
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
+  }
+
+  getTopTracks(){
+    spotifyApi.getMyTopTracks({ limit: 4 })
+      .then((data) => {
+        this.setState({
+          topTracks: data.items
+        });
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
@@ -106,7 +121,6 @@ export class Discover extends Component {
       })
     }, 100)
 
-    console.log(this.state.results)  //why is this undefined??
   }
   
 
@@ -115,7 +129,9 @@ export class Discover extends Component {
   }
 
   render() {
-    const { value, results } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases } = this.state
+    const recent_names = recentlyPlayed ? recentlyPlayed.map(x => x.name) : []
+    console.log(recent_names)
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -135,7 +151,7 @@ export class Discover extends Component {
     const top = []
 
 
-    //TODO: get number of stars and place for last argument
+    // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
       var i;
       for (i = 0; i < 4; i++) {
@@ -150,8 +166,47 @@ export class Discover extends Component {
     } 
     
 
+    if (recentlyPlayed !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (recentlyPlayed.length > i) {
+          let title = recentlyPlayed[i].track.name
+          let artist = recentlyPlayed[i].track.artists[0].name
+          let album = recentlyPlayed[i].track.album.name
+          let url = recentlyPlayed[i].track.album.images[0].url
+          recents.push(new SongInfo(title, artist, album, url, 0))
+        }
+      }
+    } 
 
+
+    if (topTracks !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (topTracks.length > i) {
+          let title = topTracks[i].name
+          let artist = topTracks[i].artists[0].name
+          let album = topTracks[i].album.name
+          let url = topTracks[i].album.images[0].url
+          top.push(new SongInfo(title, artist, album, url, 0))
+        }
+      }
+    } 
+
+    console.log(newReleases)
+    if (newReleases !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (newReleases.length > i) {
+          let title = newReleases[i].name
+          let artist = newReleases[i].artists[0].name
+          let url = newReleases[i].images[0].url
+          newAlbums.push(new SongInfo(title, artist, "", url, 0))
+        }
+      }
+    } 
     
+
     return (
       <div>
         <h1>Discover</h1>
@@ -186,13 +241,6 @@ export class Discover extends Component {
             expand={this.expandSection}
           />
 
-          {/* 
-          <SongSection
-            title='New Releases'
-            song_info={newAlbums}
-            expand={this.expandSection}
-          /> */}
-
           <SongSection
             title='Recent Songs'
             song_info={recents}
@@ -200,8 +248,14 @@ export class Discover extends Component {
           />
 
           <SongSection
-            title='Top Picks'
+            title='Your Top Picks'
             song_info={top}
+            expand={this.expandSection}
+          />
+          
+          <SongSection
+            title='New Releases'
+            song_info={newAlbums}
             expand={this.expandSection}
           />
 
