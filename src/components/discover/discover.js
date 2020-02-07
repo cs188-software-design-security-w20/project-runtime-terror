@@ -7,10 +7,9 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
-const initialState = { results: [], value: '' }
+const base_url = "http://localhost:3000"
 
 export class Discover extends Component {
-    
   constructor(){
     super();
 
@@ -22,17 +21,22 @@ export class Discover extends Component {
     }
     else if(getToken){
       spotifyApi.setAccessToken(getToken);
-
     }
 
     this.state = {
-      loggedIn: (token || spotifyApi.getAccessToken()) ? true : false,
+      loggedIn: token ? true : false,
       nowPlaying: { name: 'Not Checked', albumArt: '' },
       searchedTracks: [],
       value: '',
-      results: []
+      results: [],
+      newReleases: [],
+      recentlyPlayed: [],
+      topTracks: []
     }
 
+    this.getNewReleases();
+    this.getRecentSongs();
+    this.getTopTracks();
   }
   
 
@@ -70,12 +74,46 @@ export class Discover extends Component {
       })
   }
 
+  getNewReleases(){
+    spotifyApi.getNewReleases({ limit : 4, offset: 0, country: 'US' })
+      .then((data) => {
+        this.setState({newReleases: data.albums.items});
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
+  }
+  
+  getRecentSongs(){
+    spotifyApi.getMyRecentlyPlayedTracks({ limit: 4 })
+      .then((data) => {
+        this.setState({
+          recentlyPlayed: data.items
+        });
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
+  }
+
+  getTopTracks(){
+    spotifyApi.getMyTopTracks({ limit: 4 })
+      .then((data) => {
+        this.setState({
+          topTracks: data.items
+        });
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+      });
+  }
+
   searchTracks(keyword){
     spotifyApi.searchTracks(keyword)
       .then((data) => {
-        console.log('Search by ', keyword, data);
+        console.log('Search: ', keyword, data);
         this.setState({searchedTracks: data});
-        return;
+        return data;
       }, function(err) {
         console.error(err);
       });
@@ -83,23 +121,21 @@ export class Discover extends Component {
 
   handleResultSelect = (e, { result }) => {
     this.setState({ value: result.title })
-
+    //TODO: redirect to /createpost with song name & URL filled
   }
 
   handleSearchChange = (e, { value }) => {
     this.setState({ value })
 
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState)
+      if (this.state.value.length < 1) return this.setState({value: '', results: []})
 
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      // const isMatch = (result) => re.test(result.title)
-
+      this.searchTracks(value)
       this.setState({
-        results: this.searchTracks(re)
+        results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
       })
-      
-    }, 300)
+    }, 100)
+
   }
   
 
@@ -108,35 +144,94 @@ export class Discover extends Component {
   }
 
   render() {
-    const { value, results } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases } = this.state
+    const recent_names = recentlyPlayed ? recentlyPlayed.map(x => x.name) : []
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
     if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
-    // TODO: Replace with actual data
-    let fake_songs = [
-      new SongInfo('hello world 0', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 3),
-      new SongInfo('hello world 1', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 4.5),
-      new SongInfo('hello world 2', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 2),
-      new SongInfo('hello world 3', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 5)
-    ]
-    const recents = fake_songs
-    const trending = fake_songs
-    const top = fake_songs
+
+    var searchResults = []
+    var newAlbums = []
+    const recents = []
+    const top = []
+
+    // TODO: get number of stars and place for last argument
+    if (results !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (results.length > i) {
+          let title = results[i].name
+          let artist = results[i].artists[0].name
+          let album = results[i].album.name
+          let art_url = results[i].album.images[0].url
+          let url = results[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+        }
+      }
+    } 
+
+    if (recentlyPlayed !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (recentlyPlayed.length > i) {
+          let title = recentlyPlayed[i].track.name
+          let artist = recentlyPlayed[i].track.artists[0].name
+          let album = recentlyPlayed[i].track.album.name
+          let art_url = recentlyPlayed[i].track.album.images[0].url
+          let url = recentlyPlayed[i].track.external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+        }
+      }
+    } 
+
+
+    if (topTracks !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (topTracks.length > i) {
+          let title = topTracks[i].name
+          let artist = topTracks[i].artists[0].name
+          let album = topTracks[i].album.name
+          let art_url = topTracks[i].album.images[0].url
+          let url = topTracks[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+        }
+      }
+    } 
+
+    if (newReleases !== 'undefined') {
+      var i;
+      for (i = 0; i < 4; i++) {
+        if (newReleases.length > i) {
+          let title = newReleases[i].name
+          let artist = newReleases[i].artists[0].name
+          let art_url = newReleases[i].images[0].url
+          let url = newReleases[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url))
+        }
+      }
+    } 
     
+
     return (
       <div>
         <h1>Discover</h1>
           <Grid centered>
             <Search fluid
-              onSearchChange={this.handleSearchChange}
+              onSearchChange={_.debounce(this.handleSearchChange, 100)}
               value={value}
-              results={results}
               placeholder='search  for songs'
             />
           </Grid>
+
+          <Button onClick={()=>console.log(this.state)}>Press to see state</Button> <br />
 
           <a href='http://localhost:8888' > Login to Spotify </a>
           
@@ -156,14 +251,26 @@ export class Discover extends Component {
           }
           
           <SongSection
+            title='Search Results'
+            song_info={searchResults}
+            expand={this.expandSection}
+          />
+
+          <SongSection
             title='Recent Songs'
             song_info={recents}
             expand={this.expandSection}
           />
 
           <SongSection
-            title='Top Picks'
+            title='Your Top Picks'
             song_info={top}
+            expand={this.expandSection}
+          />
+          
+          <SongSection
+            title='New Releases'
+            song_info={newAlbums}
             expand={this.expandSection}
           />
 
