@@ -11,7 +11,6 @@ class SongCard extends Component {
 
     makePost = () => {
         let { create_url } = this.props;
-        console.log(create_url)
         window.location.href = create_url;
     }
 

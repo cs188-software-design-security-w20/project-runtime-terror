@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid, Search, Header, Segment, Divider, Breadcrumb, Button } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Divider, Breadcrumb, Button } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -111,7 +111,6 @@ export class Discover extends Component {
   searchTracks(keyword){
     spotifyApi.searchTracks(keyword)
       .then((data) => {
-        console.log('Search: ', keyword, data);
         this.setState({searchedTracks: data});
         return data;
       }, function(err) {
@@ -145,7 +144,6 @@ export class Discover extends Component {
 
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases } = this.state
-    const recent_names = recentlyPlayed ? recentlyPlayed.map(x => x.name) : []
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -157,10 +155,10 @@ export class Discover extends Component {
     var newAlbums = []
     const recents = []
     const top = []
+    var i;
 
     // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
-      var i;
       for (i = 0; i < 4; i++) {
         if (results.length > i) {
           let title = results[i].name
@@ -175,7 +173,6 @@ export class Discover extends Component {
     } 
 
     if (recentlyPlayed !== 'undefined') {
-      var i;
       for (i = 0; i < 4; i++) {
         if (recentlyPlayed.length > i) {
           let title = recentlyPlayed[i].track.name
@@ -191,7 +188,6 @@ export class Discover extends Component {
 
 
     if (topTracks !== 'undefined') {
-      var i;
       for (i = 0; i < 4; i++) {
         if (topTracks.length > i) {
           let title = topTracks[i].name
@@ -206,7 +202,6 @@ export class Discover extends Component {
     } 
 
     if (newReleases !== 'undefined') {
-      var i;
       for (i = 0; i < 4; i++) {
         if (newReleases.length > i) {
           let title = newReleases[i].name
@@ -227,11 +222,9 @@ export class Discover extends Component {
             <Search fluid
               onSearchChange={_.debounce(this.handleSearchChange, 100)}
               value={value}
-              placeholder='search  for songs'
+              placeholder='Search For Songs..'
             />
           </Grid>
-
-          <Button onClick={()=>console.log(this.state)}>Press to see state</Button> <br />
 
           <a href='http://localhost:8888' > Login to Spotify </a>
           
@@ -250,11 +243,13 @@ export class Discover extends Component {
             null
           }
           
-          <SongSection
+          {(searchResults.length !== 0) ? 
+            <SongSection
             title='Search Results'
             song_info={searchResults}
             expand={this.expandSection}
-          />
+          /> : null
+          }
 
           <SongSection
             title='Recent Songs'

@@ -40,8 +40,6 @@ export class SongInfo {
         this.rating = rating
         this.url = url
         this.create_url = create_url
-
-        console.log(this.create_url)
     }
 
     updateRating = (newRating) => {
