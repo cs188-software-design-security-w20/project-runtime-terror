@@ -7,6 +7,7 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
+const base_url = "http://localhost:3000"
 
 export class Discover extends Component {
 
@@ -131,25 +132,17 @@ export class Discover extends Component {
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases } = this.state
     const recent_names = recentlyPlayed ? recentlyPlayed.map(x => x.name) : []
-    console.log(recent_names)
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
     if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
-    // TODO: Replace with actual data
-    let fake_songs = [
-      new SongInfo('hello world 0', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 3),
-      new SongInfo('hello world 1', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 4.5),
-      new SongInfo('hello world 2', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 2),
-      new SongInfo('hello world 3', 'David Smallberg', 'CS 31', '/img/silhouette_1.png', 5)
-    ]
+
     var searchResults = []
     var newAlbums = []
     const recents = []
     const top = []
-
 
     // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
@@ -159,12 +152,13 @@ export class Discover extends Component {
           let title = results[i].name
           let artist = results[i].artists[0].name
           let album = results[i].album.name
-          let url = results[i].album.images[0].url
-          searchResults.push(new SongInfo(title, artist, album, url, 0))
+          let art_url = results[i].album.images[0].url
+          let url = results[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
     } 
-    
 
     if (recentlyPlayed !== 'undefined') {
       var i;
@@ -173,8 +167,10 @@ export class Discover extends Component {
           let title = recentlyPlayed[i].track.name
           let artist = recentlyPlayed[i].track.artists[0].name
           let album = recentlyPlayed[i].track.album.name
-          let url = recentlyPlayed[i].track.album.images[0].url
-          recents.push(new SongInfo(title, artist, album, url, 0))
+          let art_url = recentlyPlayed[i].track.album.images[0].url
+          let url = recentlyPlayed[i].track.external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
     } 
@@ -187,21 +183,24 @@ export class Discover extends Component {
           let title = topTracks[i].name
           let artist = topTracks[i].artists[0].name
           let album = topTracks[i].album.name
-          let url = topTracks[i].album.images[0].url
-          top.push(new SongInfo(title, artist, album, url, 0))
+          let art_url = topTracks[i].album.images[0].url
+          let url = topTracks[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
     } 
 
-    console.log(newReleases)
     if (newReleases !== 'undefined') {
       var i;
       for (i = 0; i < 4; i++) {
         if (newReleases.length > i) {
           let title = newReleases[i].name
           let artist = newReleases[i].artists[0].name
-          let url = newReleases[i].images[0].url
-          newAlbums.push(new SongInfo(title, artist, "", url, 0))
+          let art_url = newReleases[i].images[0].url
+          let url = newReleases[i].external_urls.spotify
+          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url))
         }
       }
     } 
