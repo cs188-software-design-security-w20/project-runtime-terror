@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../store/actions/postActions'
-import { Form, Header, Container } from 'semantic-ui-react'
+import { Form, Checkbox, Header, Container } from 'semantic-ui-react'
 
 // Semantic-UI
 // https://react.semantic-ui.com/
@@ -16,14 +16,13 @@ export class CreatePost extends Component {
     const params = this.getHashParams();
     const songName = params.SongName;
     const songUrl = params.SongUrl;
-
+    
     this.state = {
       song: songName ? songName : '',
       comment: '',
       rating: '',
-      privacy: props.profile.privacy,
       url: songUrl ? songUrl : '',
-      toggleState: 'private'    // TODO: set initial state of toggle based on whether or not privacy !== 'private' or not and remove toggleState
+      privacy: props.profile.privacy
     }
   }
   
@@ -69,7 +68,7 @@ export class CreatePost extends Component {
       song: this.state.song,
       comment: this.state.comment,
       rating: this.state.rating,
-      privacy: this.state.toggleState,
+      privacy: this.state.privacy,
       url: this.state.url
     })
     this.props.history.push('/')
@@ -77,7 +76,7 @@ export class CreatePost extends Component {
 
   toggle = () => {
     this.setState({
-      toggleState: (this.state.toggleState === 'private') ? 'public' : 'private',
+      privacy: (this.state.privacy === 'private') ? 'public' : 'private',
     })
   }
 
@@ -104,9 +103,10 @@ export class CreatePost extends Component {
               readOnly
             />
           </Form.Group>
-          <Form.Radio
-              label={this.state.toggleState === 'private' ? 'Private' : 'Public'}
-              toggle
+          <Form.Field
+              control={Checkbox}
+              label={this.state.privacy === 'private' ? 'Private' : 'Public'}
+              defaultChecked={this.state.privacy === 'private'}
               onClick={this.toggle}
             />
           <Form.Select
