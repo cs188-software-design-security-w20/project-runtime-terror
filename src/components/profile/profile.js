@@ -43,7 +43,6 @@ export class Profile extends Component {
         )
       }
     }
-
     return data
   }
 
@@ -71,17 +70,22 @@ export class Profile extends Component {
   }
 
   handleSubmit = (e) => {
+    this.handleSubmitPrivacy(e, this.state.privacy)
+  }
+
+  handleSubmitPrivacy = (e, privacy) => {
     e.preventDefault()
-    this.props.updateProfile(this.props.auth.uid, {name: this.state.name, privacy: this.state.privacy, profile: this.state.profile})
+    this.props.updateProfile(this.props.auth.uid, {name: this.state.name, privacy: privacy, profile: this.state.profile})
     this.props.history.push('/profile/' + this.props.auth.uid)
     this.setState({open: false})
   }
 
   togglePrivacy = (e) => {
+    let new_privacy = (this.state.privacy === 'private') ? 'public' : 'private'
     this.setState({
-      privacy: (this.state.privacy === 'private') ? 'public' : 'private'
+      privacy: new_privacy
     })
-    this.handleSubmit(e)
+    this.handleSubmitPrivacy(e, new_privacy)
   }
 
   render() {
