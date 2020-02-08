@@ -133,7 +133,7 @@ export class Discover extends Component {
       this.setState({
         results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
       })
-    }, 100)
+    }, 20)
 
   }
   
@@ -166,7 +166,7 @@ export class Discover extends Component {
           let album = results[i].album.name
           let art_url = results[i].album.images[0].url
           let url = results[i].external_urls.spotify
-          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
@@ -180,7 +180,7 @@ export class Discover extends Component {
           let album = recentlyPlayed[i].track.album.name
           let art_url = recentlyPlayed[i].track.album.images[0].url
           let url = recentlyPlayed[i].track.external_urls.spotify
-          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
@@ -195,7 +195,7 @@ export class Discover extends Component {
           let album = topTracks[i].album.name
           let art_url = topTracks[i].album.images[0].url
           let url = topTracks[i].external_urls.spotify
-          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
         }
       }
@@ -208,7 +208,7 @@ export class Discover extends Component {
           let artist = newReleases[i].artists[0].name
           let art_url = newReleases[i].images[0].url
           let url = newReleases[i].external_urls.spotify
-          let create_url = base_url + "/createpost/#SongName=\"" + title + "\"&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+          let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url))
         }
       }
@@ -220,7 +220,7 @@ export class Discover extends Component {
         <Header as='h1'>Discover</Header>
           <Grid centered>
             <Search fluid
-              onSearchChange={_.debounce(this.handleSearchChange, 100)}
+              onSearchChange={_.debounce(this.handleSearchChange, 20)}
               value={value}
               placeholder='Search For Songs..'
             />

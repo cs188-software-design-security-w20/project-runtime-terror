@@ -10,14 +10,23 @@ import { Form, Header, Container } from 'semantic-ui-react'
 
 export class CreatePost extends Component {
 
-  state = {
-    song: '',
-    comment: '',
-    rating: '',
-    privacy: this.props.profile ? this.props.profile.privacy : 'private',
-    url: '',
-    toggleState: 'private'    // TODO: set initial state of toggle based on whether or not privacy !== 'private' or not and remove toggleState
+  constructor(props) {
+    super();
+
+    const params = this.getHashParams();
+    const songName = params.SongName;
+    const songUrl = params.SongUrl;
+
+    this.state = {
+      song: songName ? songName : '',
+      comment: '',
+      rating: '',
+      privacy: props.profile.privacy,
+      url: songUrl ? songUrl : '',
+      toggleState: 'private'    // TODO: set initial state of toggle based on whether or not privacy !== 'private' or not and remove toggleState
+    }
   }
+  
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.profile && nextProps.profile.isLoaded && nextProps.profile.privacy !== undefined && prevState.privacy === undefined) {
@@ -28,6 +37,18 @@ export class CreatePost extends Component {
     else {
       return null
     }
+  }
+
+  getHashParams() {
+    var hashParams = {};
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    e = r.exec(q)
+    while (e) {
+       hashParams[e[1]] = decodeURIComponent(e[2]);
+       e = r.exec(q);
+    }
+    return hashParams;
   }
 
   handleChange = (e) => {
@@ -71,13 +92,16 @@ export class CreatePost extends Component {
               id='song'
               label='Song'
               name='Song'
+              placeholder={this.state.song}
               onChange={this.handleChange}
             />
             <Form.Input
               id='url'
               label='URL'
               name='URL'
+              placeholder={this.state.url}
               onChange={this.handleChange}
+              readOnly
             />
           </Form.Group>
           <Form.Radio
