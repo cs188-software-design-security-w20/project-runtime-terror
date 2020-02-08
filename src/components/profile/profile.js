@@ -188,8 +188,8 @@ export class Profile extends Component {
 
 const mapStateToProps = (state) => {
     //creates the friends list for the current user
-    var currentFriendsList = ["0"]; //This is the dummy value
-    for(var key in state.firestore.ordered.users)
+    let currentFriendsList = ["0"]; //This is the dummy value
+    for(let key in state.firestore.ordered.users)
     {
       if(state.firebase.auth["uid"] === state.firestore.ordered.users[key]["id"])
       {
@@ -198,20 +198,19 @@ const mapStateToProps = (state) => {
     }
     
     //This creates the posts on the profile that we are looking at
+    let curProfilePosts = [];
     if(state.firestore.ordered.curPrivatePosts != null && state.firestore.ordered.curPublicPosts != null){
-      var curProfilePosts = state.firestore.ordered.curPrivatePosts.concat(state.firestore.ordered.curPublicPosts).sort(function (a, b) {
+      curProfilePosts = state.firestore.ordered.curPrivatePosts.concat(state.firestore.ordered.curPublicPosts).sort(function (a, b) {
         return b.createdAt["seconds"] - a.createdAt["seconds"];
     })
     }
     else if(state.firestore.ordered.curPublicPosts != null){
-      var curProfilePosts = state.firestore.ordered.publicPosts;
+      curProfilePosts = state.firestore.ordered.publicPosts;
     }
     else if(state.firestore.ordered.curPrivatePosts != null){
-      var curProfilePosts = state.firestore.ordered.curPrivatePosts;
+      curProfilePosts = state.firestore.ordered.curPrivatePosts;
     }
-    else{
-      var curProfilePosts = [];
-    }
+
   return {
     curProfilePosts: curProfilePosts,
     auth: state.firebase.auth,
