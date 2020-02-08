@@ -32,6 +32,7 @@ export class Discover extends Component {
       newReleases: [],
       recentlyPlayed: [],
       topTracks: [],
+      _token: (token) ? token : getToken,
       deviceId: "",
       error: "",
       trackName: "Track Name",
