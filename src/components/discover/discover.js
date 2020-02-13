@@ -82,7 +82,10 @@ export class Discover extends Component {
       }, function(err) {
         console.log("Something went wrong!", err);
         if (err.status === 401) {
-          window.alert("Please login to Spotify!")
+          if (window.confirm("Please login to Spotify!")) {
+            window.location.href = 'http://localhost:8888';
+          }
+
         }
       });
   }
