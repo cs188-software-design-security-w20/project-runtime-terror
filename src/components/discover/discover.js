@@ -81,6 +81,9 @@ export class Discover extends Component {
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
+        if (err.status === 401) {
+          window.alert("Please login to Spotify!")
+        }
       });
   }
   
@@ -116,11 +119,6 @@ export class Discover extends Component {
       }, function(err) {
         console.error(err);
       });
-  }
-
-  handleResultSelect = (e, { result }) => {
-    this.setState({ value: result.title })
-    //TODO: redirect to /createpost with song name & URL filled
   }
 
   handleSearchChange = (e, { value }) => {
