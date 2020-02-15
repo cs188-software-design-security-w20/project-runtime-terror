@@ -5,7 +5,7 @@ class SongCard extends Component {
 
     playSong = () => {
         // TODO: start song on player
-        let { title, artist, album, url } = this.props;
+        let { url } = this.props;
         window.location.href = url;
     }
 

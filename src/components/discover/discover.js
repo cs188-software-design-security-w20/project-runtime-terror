@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid, Search, Header, Divider, Breadcrumb, Button } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Divider, Button } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -55,7 +55,7 @@ export class Discover extends Component {
   getNowPlaying(){
     spotifyApi.getMyCurrentPlaybackState()
       .then((response) => {
-        if (response == '' || response.item.name == null) {
+        if (response === '' || response.item.name === null) {
           this.setState({
             nowPlaying: { 
                 name: 'Nothing is playing right now', 
@@ -230,7 +230,7 @@ export class Discover extends Component {
             Now Playing: { this.state.nowPlaying.name }
           </div>
           <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }}/>
+            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} alt='' />
           </div>
 
           { this.state.loggedIn ?
