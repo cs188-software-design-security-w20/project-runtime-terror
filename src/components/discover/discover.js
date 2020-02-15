@@ -213,55 +213,55 @@ export class Discover extends Component {
 
     return (
       <div>
-        <Header as='h1'>Discover</Header>
-          <Grid centered>
-            <Search fluid
-              showNoResults={false}
-              size='large'
-              onSearchChange={_.debounce(this.handleSearchChange, 20)}
-              value={value}
-              placeholder='Search For Songs..'
-            />
-          </Grid>
-
-          <a href='http://localhost:8888' > Login to Spotify </a>
-          
-          <div>
-            Now Playing: { this.state.nowPlaying.name }
-          </div>
-          <div>
-            <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} alt='' />
-          </div>
-
-          { this.state.loggedIn ?
-            <Button onClick={() => this.getNowPlaying()}>
-              Check Now Playing
-            </Button>
-            :
-            null
-          }
-          
-          {(searchResults.length !== 0) ? 
-            <SongSection
-            title='Search Results'
-            song_info={searchResults}
-          /> : null
-          }
-
-          <SongSection
-            title='Recent Songs'
-            song_info={recents}
+        <Divider hidden />
+        <Grid centered>
+          <Search fluid
+            showNoResults={false}
+            size='large'
+            onSearchChange={_.debounce(this.handleSearchChange, 20)}
+            value={value}
+            placeholder='Search For Songs..'
           />
+        </Grid>
 
+        <a href='http://localhost:8888' > Login to Spotify </a>
+        
+        <div>
+          Now Playing: { this.state.nowPlaying.name }
+        </div>
+        <div>
+          <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} alt='' />
+        </div>
+
+        { this.state.loggedIn ?
+          <Button onClick={() => this.getNowPlaying()}>
+            Check Now Playing
+          </Button>
+          :
+          null
+        }
+        
+        {(searchResults.length !== 0) ? 
           <SongSection
-            title='Your Top Picks'
-            song_info={top}
-          />
-          
-          <SongSection
-            title='New Releases'
-            song_info={newAlbums}
-          />
+          title='Search Results'
+          song_info={searchResults}
+        /> : null
+        }
+
+        <SongSection
+          title='Recent Songs'
+          song_info={recents}
+        />
+
+        <SongSection
+          title='Your Top Picks'
+          song_info={top}
+        />
+        
+        <SongSection
+          title='New Releases'
+          song_info={newAlbums}
+        />
 
         <br/>
       </div>

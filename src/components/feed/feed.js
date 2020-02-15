@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Tab } from 'semantic-ui-react'
+import { Tab, Divider } from 'semantic-ui-react'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
@@ -22,7 +22,7 @@ export class Feed extends Component {
 
     return (
       <div>
-        <h1>Feed</h1>
+        <Divider hidden />
         <Tab panes={this.feedPanes}/> 
       </div>
     )

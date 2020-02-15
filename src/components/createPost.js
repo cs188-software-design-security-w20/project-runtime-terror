@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../store/actions/postActions'
-import { Form, Checkbox, Header, Container } from 'semantic-ui-react'
+import { Form, Checkbox, Header, Container, Divider } from 'semantic-ui-react'
 
 // Semantic-UI
 // https://react.semantic-ui.com/
@@ -84,6 +84,7 @@ export class CreatePost extends Component {
 
     return (
       <Container text>
+        <Divider hidden />
         <Header as='h2'>Create Post</Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group widths='equal'>
