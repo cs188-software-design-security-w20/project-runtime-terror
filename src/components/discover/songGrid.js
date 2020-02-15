@@ -12,7 +12,7 @@ class SongGrid extends Component {
         }
         else {            
             const song_cards = song_info.map((info, index) => <Grid.Column stretched key={index}><SongCard title={info.title} artist={info.artist} album={info.album} art_url={info.art_url} rating={info.rating} url={info.url} create_url={info.create_url}/></Grid.Column>)
-            const rows = Array(Math.ceil(song_info.length / 4)).fill().map((currValue, index) => <Grid.Row key={index}>{song_cards.slice(index*4, index*4 + 4)}</Grid.Row>)
+            const rows = Array(Math.ceil(song_info.length / 5)).fill().map((currValue, index) => <Grid.Row key={index}>{song_cards.slice(index*5, index*5 + 5)}</Grid.Row>)
             return (
                 <Grid columns='equal'>
                     {rows}

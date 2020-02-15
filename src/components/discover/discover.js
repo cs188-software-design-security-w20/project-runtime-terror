@@ -75,14 +75,14 @@ export class Discover extends Component {
   }
 
   getNewReleases(){
-    spotifyApi.getNewReleases({ limit : 4, offset: 0, country: 'US' })
+    spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' })
       .then((data) => {
         this.setState({newReleases: data.albums.items});
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
         if (err.status === 401) {
-          if (window.confirm("Please login to Spotify!")) {
+          if (window.confirm("Token Expired! Please re-login to Spotify!")) {
             window.location.href = 'http://localhost:8888';
           }
 
@@ -91,7 +91,7 @@ export class Discover extends Component {
   }
   
   getRecentSongs(){
-    spotifyApi.getMyRecentlyPlayedTracks({ limit: 4 })
+    spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 })
       .then((data) => {
         this.setState({
           recentlyPlayed: data.items
@@ -103,7 +103,7 @@ export class Discover extends Component {
   }
 
   getTopTracks(){
-    spotifyApi.getMyTopTracks({ limit: 4 })
+    spotifyApi.getMyTopTracks({ limit: 5 })
       .then((data) => {
         this.setState({
           topTracks: data.items
@@ -138,11 +138,6 @@ export class Discover extends Component {
 
   }
   
-
-  expandSection = (e, data) => {
-    // TODO: Handle user choosing to see more from a section
-  }
-
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases } = this.state
 
@@ -160,7 +155,7 @@ export class Discover extends Component {
 
     // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
-      for (i = 0; i < 4; i++) {
+      for (i = 0; i < 5; i++) {
         if (results.length > i) {
           let title = results[i].name
           let artist = results[i].artists[0].name
@@ -174,7 +169,7 @@ export class Discover extends Component {
     } 
 
     if (recentlyPlayed !== 'undefined') {
-      for (i = 0; i < 4; i++) {
+      for (i = 0; i < 5; i++) {
         if (recentlyPlayed.length > i) {
           let title = recentlyPlayed[i].track.name
           let artist = recentlyPlayed[i].track.artists[0].name
@@ -189,7 +184,7 @@ export class Discover extends Component {
 
 
     if (topTracks !== 'undefined') {
-      for (i = 0; i < 4; i++) {
+      for (i = 0; i < 5; i++) {
         if (topTracks.length > i) {
           let title = topTracks[i].name
           let artist = topTracks[i].artists[0].name
@@ -203,7 +198,7 @@ export class Discover extends Component {
     } 
 
     if (newReleases !== 'undefined') {
-      for (i = 0; i < 4; i++) {
+      for (i = 0; i < 5; i++) {
         if (newReleases.length > i) {
           let title = newReleases[i].name
           let artist = newReleases[i].artists[0].name
@@ -248,26 +243,22 @@ export class Discover extends Component {
             <SongSection
             title='Search Results'
             song_info={searchResults}
-            expand={this.expandSection}
           /> : null
           }
 
           <SongSection
             title='Recent Songs'
             song_info={recents}
-            expand={this.expandSection}
           />
 
           <SongSection
             title='Your Top Picks'
             song_info={top}
-            expand={this.expandSection}
           />
           
           <SongSection
             title='New Releases'
             song_info={newAlbums}
-            expand={this.expandSection}
           />
 
         <br/>
@@ -279,21 +270,16 @@ export class Discover extends Component {
 
 class SongSection extends Component {
   render() {
-    const {title, song_info, expand} = this.props
+    const {title, song_info} = this.props
 
     return (
       <div>
         <br/>
-          <Container>
-            <Header as='h2' textAlign='left'>{title}</Header>
+          <Container fluid>
+            <Header as='h2' textAlign='center'>{title}</Header>
             <Divider/>
             <SongGrid song_info={song_info}/>
-            <br/>
-            <Container textAlign='right'>
-              <Breadcrumb floated='right' size='huge'>
-                <Breadcrumb.Section link onClick={expand}>See more</Breadcrumb.Section>
-              </Breadcrumb>
-            </Container>
+            <Divider hidden/>
           </Container>
       </div>
     )
