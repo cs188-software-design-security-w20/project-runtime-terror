@@ -216,6 +216,8 @@ export class Discover extends Component {
         <Header as='h1'>Discover</Header>
           <Grid centered>
             <Search fluid
+              showNoResults={false}
+              size='large'
               onSearchChange={_.debounce(this.handleSearchChange, 20)}
               value={value}
               placeholder='Search For Songs..'
