@@ -155,22 +155,19 @@ export class Discover extends Component {
 
     // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
-      for (i = 0; i < 5; i++) {
-        if (results.length > i) {
-          let title = results[i].name
-          let artist = results[i].artists[0].name
-          let album = results[i].album.name
-          let art_url = results[i].album.images[0].url
-          let url = results[i].external_urls.spotify
-          let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
-        }
+      for (i = 0; i < Math.min(results.length, 5); i++) {
+        let title = results[i].name
+        let artist = results[i].artists[0].name
+        let album = results[i].album.name
+        let art_url = results[i].album.images[0].url
+        let url = results[i].external_urls.spotify
+        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+        searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
       }
     } 
 
     if (recentlyPlayed !== 'undefined') {
-      for (i = 0; i < 5; i++) {
-        if (recentlyPlayed.length > i) {
+      for (i = 0; i < Math.min(recentlyPlayed.length, 5); i++) {
           let title = recentlyPlayed[i].track.name
           let artist = recentlyPlayed[i].track.artists[0].name
           let album = recentlyPlayed[i].track.album.name
@@ -178,14 +175,12 @@ export class Discover extends Component {
           let url = recentlyPlayed[i].track.external_urls.spotify
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
-        }
       }
     } 
 
 
     if (topTracks !== 'undefined') {
-      for (i = 0; i < 5; i++) {
-        if (topTracks.length > i) {
+      for (i = 0; i < Math.min(topTracks.length, 5); i++) {
           let title = topTracks[i].name
           let artist = topTracks[i].artists[0].name
           let album = topTracks[i].album.name
@@ -193,20 +188,17 @@ export class Discover extends Component {
           let url = topTracks[i].external_urls.spotify
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
-        }
       }
     } 
 
     if (newReleases !== 'undefined') {
-      for (i = 0; i < 5; i++) {
-        if (newReleases.length > i) {
+      for (i = 0; i < Math.min(newReleases.length, 5); i++) {
           let title = newReleases[i].name
           let artist = newReleases[i].artists[0].name
           let art_url = newReleases[i].images[0].url
           let url = newReleases[i].external_urls.spotify
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
           newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url))
-        }
       }
     } 
     
@@ -248,20 +240,26 @@ export class Discover extends Component {
         /> : null
         }
 
+        {(recents.length !== 0) ?
         <SongSection
           title='Recent Songs'
           song_info={recents}
-        />
+        /> : null
+        }
 
+        {(top.length !== 0) ?
         <SongSection
           title='Your Top Picks'
           song_info={top}
-        />
+        /> : null
+        }
         
+        {(newAlbums.length !== 0) ?
         <SongSection
           title='New Releases'
           song_info={newAlbums}
-        />
+        /> : null
+        }
 
         <br/>
       </div>
