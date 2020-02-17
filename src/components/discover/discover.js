@@ -42,6 +42,7 @@ export class Discover extends Component {
       position: 0,
       duration: 1,
       albumArt: "",
+      player_connected: false,
     }
 
     this.getNewReleases();
@@ -168,6 +169,8 @@ export class Discover extends Component {
   
      
       this.player.connect();
+      const player_connected = true;
+      this.setState({player_connected});
     }
   }
 
@@ -225,15 +228,21 @@ export class Discover extends Component {
   }
 
   onPrevClick() {
-    this.player.previousTrack();
+    if(this.state.player_connected){
+      this.player.previousTrack();
+    }
   }
   
   onPlayClick() {
-    this.player.togglePlay();
+    if(this.state.player_connected){
+      this.player.togglePlay();
+    }
   }
   
   onNextClick() {
-    this.player.nextTrack();
+    if(this.state.player_connected){
+      this.player.nextTrack();
+    }
   }
   
   transferPlaybackHere() {
@@ -256,7 +265,7 @@ export class Discover extends Component {
 
 
   render() {
-    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token } = this.state
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -279,8 +288,10 @@ export class Discover extends Component {
           let album = results[i].album.name
           let art_url = results[i].album.images[0].url
           let url = results[i].external_urls.spotify
+          let access_token = _token
+          let uri = results[i].uri
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
         }
       }
     } 
@@ -293,8 +304,10 @@ export class Discover extends Component {
           let album = recentlyPlayed[i].track.album.name
           let art_url = recentlyPlayed[i].track.album.images[0].url
           let url = recentlyPlayed[i].track.external_urls.spotify
+          let access_token = _token
+          let uri = recentlyPlayed[i].uri
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
         }
       }
     } 
@@ -308,8 +321,10 @@ export class Discover extends Component {
           let album = topTracks[i].album.name
           let art_url = topTracks[i].album.images[0].url
           let url = topTracks[i].external_urls.spotify
+          let access_token = _token
+          let uri = topTracks[i].uri
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url))
+          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
         }
       }
     } 
@@ -321,8 +336,10 @@ export class Discover extends Component {
           let artist = newReleases[i].artists[0].name
           let art_url = newReleases[i].images[0].url
           let url = newReleases[i].external_urls.spotify
+          let access_token = _token
+          let uri = newReleases[i].uri
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url))
+          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url, access_token, uri))
         }
       }
     } 

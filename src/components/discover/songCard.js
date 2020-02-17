@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import { Card, Button, Image, Icon } from 'semantic-ui-react'
 
+
+
 class SongCard extends Component {
 
-    playSong = () => {
+    playSong(){
         // TODO: start song on player
-        let { title, artist, album, url } = this.props;
-        window.location.href = url;
+        let { title, artist, album, url, _token, uri } = this.props;
+        console.log("URI: " + uri);
+        console.log("TOKEN: " + _token);
+        fetch("https://api.spotify.com/v1/me/player/play", {
+            method: "PUT",
+            headers: {
+                authorization: `Bearer ${_token}`,
+            },
+            body: {
+                "uris":[uri]
+            },
+        });
+        //window.location.href = url;
     }
 
     makePost = () => {
@@ -15,7 +28,7 @@ class SongCard extends Component {
     }
 
     render() {
-        let { title, artist, album, art_url, rating } = this.props;
+        let { title, artist, album, art_url, rating, _token, uri } = this.props;
         rating = Math.min(rating, 5)    // Do we need this check?
 
         const full = Array(Math.floor(rating)).fill().map((currVal, index) => <Icon color='yellow' name='star' key={index}/>)
@@ -32,7 +45,7 @@ class SongCard extends Component {
                     {trailing}
                 </Card.Content>
                 <Card.Content extra>
-                    <Button fluid positive onClick={this.playSong}>Listen!</Button>
+                    <Button fluid positive onClick={() => this.playSong()}>Listen!</Button>
                 </Card.Content>
             </Card>
         )
