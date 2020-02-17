@@ -265,7 +265,7 @@ export class Discover extends Component {
 
 
   render() {
-    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId } = this.state
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -290,8 +290,10 @@ export class Discover extends Component {
           let url = results[i].external_urls.spotify
           let access_token = _token
           let uri = results[i].uri
+          let deviceid = deviceId
+          let type = results[i].type
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
+          searchResults.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri, deviceid, type))
         }
       }
     } 
@@ -305,9 +307,11 @@ export class Discover extends Component {
           let art_url = recentlyPlayed[i].track.album.images[0].url
           let url = recentlyPlayed[i].track.external_urls.spotify
           let access_token = _token
-          let uri = recentlyPlayed[i].uri
+          let uri = recentlyPlayed[i].track.uri
+          let deviceid = deviceId
+          let type = recentlyPlayed[i].type
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
+          recents.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri, deviceid, type))
         }
       }
     } 
@@ -323,8 +327,10 @@ export class Discover extends Component {
           let url = topTracks[i].external_urls.spotify
           let access_token = _token
           let uri = topTracks[i].uri
+          let deviceid = deviceId
+          let type = topTracks[i].type
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri))
+          top.push(new SongInfo(title, artist, album, art_url, 0, url, create_url, access_token, uri, deviceid, type))
         }
       }
     } 
@@ -338,8 +344,10 @@ export class Discover extends Component {
           let url = newReleases[i].external_urls.spotify
           let access_token = _token
           let uri = newReleases[i].uri
+          let deviceid = deviceId
+          let type = newReleases[i].type
           let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url, access_token, uri))
+          newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url, access_token, uri, deviceid, type))
         }
       }
     } 
