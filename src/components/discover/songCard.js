@@ -7,7 +7,7 @@ class SongCard extends Component {
 
     playSong(){
         // TODO: start song on player
-        let { title, artist, album, url, _token, uri } = this.props;
+        let { title, artist, album, url, _token, uri, deviceid } = this.props;
         console.log("URI: " + uri);
         console.log("TOKEN: " + _token);
         fetch("https://api.spotify.com/v1/me/player/play", {
@@ -15,9 +15,12 @@ class SongCard extends Component {
             headers: {
                 authorization: `Bearer ${_token}`,
             },
-            body: {
-                "uris":[uri]
+            query:{
+                "device_id":deviceid
             },
+            body: JSON.stringify({
+                uris:[uri]
+            }),
         });
         //window.location.href = url;
     }
