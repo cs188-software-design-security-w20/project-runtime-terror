@@ -1,29 +1,43 @@
 import React, { Component } from 'react'
-import { Tab } from 'semantic-ui-react'
+import { Tab, Divider } from 'semantic-ui-react'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { connect } from 'react-redux'
 import PostList from './postList'
 
 export class Feed extends Component {
-  feedPanes = [
-    { menuItem: 'Friends', render: () => <Tab.Pane>{this.state.friendsContent}</Tab.Pane> },
-    { menuItem: 'Explore', render: () => <Tab.Pane>{this.state.exploreContent}</Tab.Pane> },
-  ]
   state = {
-    friendsContent: null,
-    exploreContent: null,
+    friendsPosts: null,
+    explorePosts: null,
+    users: null,
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let newPosts = {}
+    console.log(nextProps)
+    if (nextProps.explorePosts !== prevState.explorePosts) {
+      Object.assign(newPosts, {explorePosts: nextProps.explorePosts})
+    }
+    if (nextProps.friendsPosts !== undefined && nextProps.friendsPosts !== prevState.friendsPosts) {
+      Object.assign(newPosts, {friendsPosts: nextProps.friendsPosts})
+    }
+    if (nextProps.users !== undefined && nextProps.users !== prevState.users) {
+      Object.assign(newPosts, {users: nextProps.users})
+    }
+    console.log(newPosts)
+    return (newPosts.length !== 0) ? newPosts : null;
   }
 
   render() {
-    const {explorePosts, friendsPosts, users} = this.props;
-    this.state.friendsContent = <div> <PostList posts={friendsPosts} users={users} /> </div>
-    this.state.exploreContent = <div> <PostList posts={explorePosts} users={users} /> </div>
-
+    let feedPanes = [
+      { menuItem: 'Friends', render: () => <Tab.Pane><PostList posts={this.state.friendsPosts} users={this.state.users}/></Tab.Pane> },
+      { menuItem: 'Explore', render: () => <Tab.Pane><PostList posts={this.state.explorePosts} users={this.state.users}/></Tab.Pane> },
+    ]
+  
     return (
       <div>
-        <h1>Feed</h1>
-        <Tab panes={this.feedPanes}/> 
+        <Divider hidden />
+        <Tab panes={feedPanes}/> 
       </div>
     )
   }
@@ -75,7 +89,7 @@ export default compose(
       {
         collection: 'posts',
         storeAs: 'friendsPosts',
-        where: ['authorId', 'in', props.currentFriendsList == null || props.currentFriendsList.length == 0 ? ['0'] : props.currentFriendsList]
+        where: ['authorId', 'in', props.currentFriendsList === null || props.currentFriendsList.length === 0 ? ['0'] : props.currentFriendsList]
       },
       { 
         collection: 'posts',

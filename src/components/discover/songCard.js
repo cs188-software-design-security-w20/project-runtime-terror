@@ -7,10 +7,8 @@ class SongCard extends Component {
 
     playSong(){
         // TODO: start song on player
-        let { title, artist, album, url, _token, uri, deviceid, type } = this.props;
-        console.log("URI: " + uri);
-        console.log("TOKEN: " + _token);
-        console.log("TYPE: " + type);
+        let { _token, uri, deviceid, type } = this.props;
+
         if(type === "track"){
             fetch("https://api.spotify.com/v1/me/player/play", {
             method: "PUT",
@@ -38,9 +36,7 @@ class SongCard extends Component {
                 context_uri:uri
             }),
         });
-        }
-        
-        //window.location.href = url;
+        }        
     }
 
     makePost = () => {
@@ -49,7 +45,7 @@ class SongCard extends Component {
     }
 
     render() {
-        let { title, artist, album, art_url, rating, _token, uri } = this.props;
+        let { title, artist, album, art_url, rating } = this.props;
         rating = Math.min(rating, 5)    // Do we need this check?
 
         const full = Array(Math.floor(rating)).fill().map((currVal, index) => <Icon color='yellow' name='star' key={index}/>)

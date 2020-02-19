@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom'
-import { Sidebar, Menu, Segment, Label } from 'semantic-ui-react'
+import { Sidebar, Menu, Segment, Label, Image } from 'semantic-ui-react'
 import { signOut } from '../../store/actions/authActions'
 
 
@@ -40,7 +40,8 @@ class SideNavbar extends Component {
 
     render() {
         const { profile } = this.props;
-        let image = profile ? <img src={profile.imageUrl} alt=""/> : null
+        let imageTop = profile ? <Image circular centered size='mini' src={profile.imageUrl} alt=""/> : null
+        let imageBot = profile ? <Image circular centered size='small' src={profile.imageUrl} alt=""/> : null
         let requests_num = profile && profile.friends_pending ? profile.friends_pending.length : 0
         const requests = (requests_num > 0) ? 
             <Menu.Item onClick={() => {this.load(this.REQUESTS)}}>Friend Requests:
@@ -52,13 +53,13 @@ class SideNavbar extends Component {
                 <Menu fixed='top'>
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
                     <Menu.Item header onClick={() => {this.load(this.FEED)}}>Runtime Terror</Menu.Item>
-                    <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{image}</Menu.Item>
+                    <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{imageTop}</Menu.Item>
                     {requests}
                 </Menu>
                 <div id='sidebar'>
                 <Sidebar.Pushable as={Segment}>
                     <Sidebar as={Menu} animation={'slide along'} direction={'left'} icon='labeled' inverted vertical visible={this.state.visible} width='thin'>
-                        <Menu.Item onClick={() => {this.load(this.PROFILE)}} name='Profile'>{image}Profile</Menu.Item>,
+                        <Menu.Item onClick={() => {this.load(this.PROFILE)}} name='Profile'><br/>{imageBot}<br/>Profile</Menu.Item>,
                         <Menu.Item onClick={() => {this.load(this.DISCOVER)}} icon='map' name='Discover'/>,
                         <Menu.Item onClick={() => {this.load(this.FEED)}} icon='sitemap' name='Feed'/>,
                         <Menu.Item onClick={this.props.signOut} name='Sign out' icon='sign out' position='right'/>

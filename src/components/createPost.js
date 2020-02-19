@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../store/actions/postActions'
-import { Form, Checkbox, Header, Container } from 'semantic-ui-react'
+import { Form, Radio, Header, Container, Divider } from 'semantic-ui-react'
 
 // Semantic-UI
 // https://react.semantic-ui.com/
@@ -22,7 +22,8 @@ export class CreatePost extends Component {
       comment: '',
       rating: '',
       url: songUrl ? songUrl : '',
-      privacy: props.profile.privacy
+      privacy: props.profile.privacy,
+      error: false,
     }
   }
   
@@ -64,14 +65,19 @@ export class CreatePost extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    this.props.createPost({
-      song: this.state.song,
-      comment: this.state.comment,
-      rating: this.state.rating,
-      privacy: this.state.privacy,
-      url: this.state.url
-    })
-    this.props.history.push('/')
+    if (this.state.rating) {
+      this.props.createPost({
+        song: this.state.song,
+        comment: this.state.comment,
+        rating: this.state.rating,
+        privacy: this.state.privacy,
+        url: this.state.url
+      })
+      this.props.history.push('/')
+    }
+    else {
+        this.setState({ error: 'Rating is required!' })
+    }
   }
 
   toggle = () => {
@@ -84,6 +90,7 @@ export class CreatePost extends Component {
 
     return (
       <Container text>
+        <Divider hidden />
         <Header as='h2'>Create Post</Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group widths='equal'>
@@ -91,6 +98,8 @@ export class CreatePost extends Component {
               id='song'
               label='Song'
               name='Song'
+              required={this.state.song ? false : true}
+              readOnly={this.state.url ? true : false}
               placeholder={this.state.song}
               onChange={this.handleChange}
             />
@@ -98,20 +107,26 @@ export class CreatePost extends Component {
               id='url'
               label='URL'
               name='URL'
+              readOnly
+              disabled={this.state.url ? false : true}
               placeholder={this.state.url}
               onChange={this.handleChange}
-              readOnly
             />
           </Form.Group>
           <Form.Field
-              control={Checkbox}
-              label={this.state.privacy === 'private' ? 'Private' : 'Public'}
+              control={Radio}
+              toggle
+              label={this.state.privacy === 'private' ? 'This post will be Private' : 'This post will be Public'}
               defaultChecked={this.state.privacy === 'private'}
               onClick={this.toggle}
             />
-          <Form.Select
+          <Form.Dropdown
             id='rating'
             label='Rating'
+            placeholder='Select'
+            required
+            inline
+            error={this.state.error}
             onChange={this.handleRating}
             options={
               [

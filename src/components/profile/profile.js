@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { Redirect } from 'react-router-dom'
-import { Grid, GridRow, Image, Button, Segment, Tab, GridColumn, Label, Modal, Form, Header, Select, Radio } from 'semantic-ui-react'
+import { Grid, GridRow, Image, Button, Segment, Tab, GridColumn, Label, Modal, Form } from 'semantic-ui-react'
 import { addFriend, removeFriend, acceptFriend } from '../../store/actions/authActions'
 import CreatePost from '../createPost';
 import PostList from '../feed/postList'
@@ -107,7 +107,7 @@ export class Profile extends Component {
     this.state.posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
     this.state.friends_content = curProfileUser ? 
           ((currentFriendsList && match && match.params && match.params.id && currentFriendsList.includes(match.params.id)) 
-            || (auth && match && match.params && match.params.id && auth["uid"] == match.params.id) ? 
+            || (auth && match && match.params && match.params.id && auth["uid"] === match.params.id) ? 
             <div> <FriendList users={users} friends={curProfileUser.friends} /> </div> :
             <div> <FriendList users={users} friends={[]} /> </div>)
              : null
@@ -118,8 +118,7 @@ export class Profile extends Component {
       )
     }
 
-    console.log(this.state)
-
+    
     return (
       <div>
         <Grid centered padded='vertically'>
@@ -244,7 +243,7 @@ export default compose(
         'privacy', '==', 
         //get the private posts if they are friends OR they are the current user
         //Otherwise we can only see their public posts
-        props.currentFriendsList == null || (props.match.params.id != props.auth["uid"] && !props.currentFriendsList.includes(props.match.params.id))?
+        props.currentFriendsList === null || (props.match.params.id !== props.auth["uid"] && !props.currentFriendsList.includes(props.match.params.id))?
         '0':'private'
         ],
       ],
