@@ -51,6 +51,15 @@ export class Discover extends Component {
     this.playerCheckInterval = null;
   }
   
+  componentDidMount() {
+    this.props.history.listen(this.onRouteChange.bind(this));
+  }
+
+  onRouteChange(route) {
+    if(this.state.player_connected){
+      this.player.disconnect();
+    }
+  }
 
   getHashParams() {
     var hashParams = {};

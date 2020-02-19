@@ -99,7 +99,7 @@ app.get('/callback', function(req, res) {
             refresh_token: refresh_token
           }));
       } else {
-        res.redirect('/#' +
+        res.redirect('http://localhost:3000/discover#' +
           querystring.stringify({
             error: 'invalid_token'
           }));
