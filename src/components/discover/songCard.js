@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Image, Icon, Popup } from 'semantic-ui-react'
+import { Card, Button, Image, Popup } from 'semantic-ui-react'
 
 
 const timeoutLength = 1500

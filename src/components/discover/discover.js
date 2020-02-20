@@ -199,8 +199,13 @@ export class Discover extends Component {
             results: (this.state.searchedPlaylists !== [] && this.state.searchedPlaylists.playlists && this.state.searchedPlaylists.playlists.items) ? this.state.searchedPlaylists.playlists.items : []
           })
           break;
+
+        default:
+          this.setState({
+            results: []
+          }) 
+          break;
       }
-      
     }, 20)
 
   }
