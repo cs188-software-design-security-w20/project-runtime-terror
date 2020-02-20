@@ -25,7 +25,11 @@ export class Discover extends Component {
 
     this.state = {
       loggedIn: token ? true : false,
+      searchButton: 'songs',
       searchedTracks: [],
+      searchedArtists: [],
+      searchedAlbums: [],
+      searchedPlaylists: [],
       value: '',
       results: [],
       newReleases: [],
@@ -131,16 +135,72 @@ export class Discover extends Component {
       });
   }
 
+  searchAlbums(keyword){
+    spotifyApi.searchAlbums(keyword)
+      .then((data) => {
+        this.setState({searchedAlbums: data});
+        return data;
+      }, function(err) {
+        console.error(err);
+      });
+  }
+
+  searchArtists(keyword){
+    spotifyApi.searchArtists(keyword)
+      .then((data) => {
+        this.setState({searchedArtists: data});
+        return data;
+      }, function(err) {
+        console.error(err);
+      });
+  }
+
+  searchPlaylists(keyword){
+    spotifyApi.searchPlaylists(keyword)
+      .then((data) => {
+        this.setState({searchedPlaylists: data});
+        return data;
+      }, function(err) {
+        console.error(err);
+      });
+  }
+
   handleSearchChange = (e, { value }) => {
     this.setState({ value })
 
     setTimeout(() => {
       if (this.state.value.length < 1) return this.setState({value: '', results: []})
 
-      this.searchTracks(value)
-      this.setState({
-        results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
-      })
+      switch(this.state.searchButton) {
+        case 'songs':
+          this.searchTracks(value)
+          this.setState({
+            results: (this.state.searchedTracks !== [] && this.state.searchedTracks.tracks && this.state.searchedTracks.tracks.items) ? this.state.searchedTracks.tracks.items : []
+          })
+          break;
+
+        case 'artists':
+          this.searchArtists(value)
+          this.setState({
+            results: (this.state.searchedArtists !== [] && this.state.searchedArtists.artists && this.state.searchedArtists.artists.items) ? this.state.searchedArtists.artists.items : []
+          })
+          break;
+          
+        case 'albums':
+          this.searchAlbums(value)
+          this.setState({
+            results: (this.state.searchedAlbums !== [] && this.state.searchedAlbums.albums && this.state.searchedAlbums.albums.items) ? this.state.searchedAlbums.albums.items : []
+          })
+          break;
+
+        case 'playlists':
+          this.searchPlaylists(value)
+          this.setState({
+            results: (this.state.searchedPlaylists !== [] && this.state.searchedPlaylists.playlists && this.state.searchedPlaylists.playlists.items) ? this.state.searchedPlaylists.playlists.items : []
+          })
+          break;
+      }
+      
     }, 20)
 
   }
@@ -259,18 +319,16 @@ export class Discover extends Component {
 
     let searchResults = []
     let newAlbums = []
-    let launch_player = () => this.checkForPlayer_driver()
     const recents = []
     const top = []
     let i;
 
-    // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
       for (i = 0; i < Math.min(results.length, 5); i++) {
         let title = results[i].name
-        let artist = results[i].artists[0].name
-        let album = results[i].album.name
-        let art_url = results[i].album.images[0].url
+        let artist = results[i].type === 'track' ? results[i].artists[0].name : results[i].type === 'playlist' ? results[i].owner.display_name : results[i].type === 'album' ? results[i].artists[0].name : ''
+        let album = results[i].type === 'track' ? results[i].album.name : ''
+        let art_url = results[i].type === 'artist' || results[i].type === 'playlist' || results[i].type === 'album' ? results[i].images[0].url : results[i].album.images[0].url
         let url = results[i].external_urls.spotify
         let access_token = _token
         let uri = results[i].uri
@@ -358,7 +416,7 @@ export class Discover extends Component {
               player
             }
             <Menu.Item href='http://localhost:8888' target='noreferrer noopener' position='right'>
-              Sign in to spotify
+              Sign In To Spotify
             </Menu.Item>
           </Menu>
         }
@@ -370,8 +428,17 @@ export class Discover extends Component {
             size='large'
             onSearchChange={_.debounce(this.handleSearchChange, 20)}
             value={value}
-            placeholder='Search For Songs..'
+            placeholder={'Search for ' + this.state.searchButton + '..'}
             />
+        </Grid>
+        <Divider hidden />
+        <Grid centered>
+          <Button.Group labeled >
+            <Button positive={this.state.searchButton === 'songs'} secondary content='Song' onClick={() => this.setState({value: '', results: [], searchButton: 'songs'})} />
+            <Button positive={this.state.searchButton === 'artists'} secondary content='Artist' onClick={() => this.setState({value: '', results: [], searchButton: 'artists'})} />
+            <Button positive={this.state.searchButton === 'albums'} secondary content='Album' onClick={() => this.setState({value: '', results: [], searchButton: 'albums'})} />
+            <Button positive={this.state.searchButton === 'playlists'} secondary content='Playlist' onClick={() => this.setState({value: '', results: [], searchButton: 'playlists'})} />
+          </Button.Group>
         </Grid>
 
         <br/>

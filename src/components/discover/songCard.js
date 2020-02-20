@@ -40,7 +40,7 @@ class SongCard extends Component {
                 }),
             });
             }
-            if(type === "album"){
+            if(type === "album" || type === "artist" || type === "playlist"){
                 fetch("https://api.spotify.com/v1/me/player/play", {
                 method: "PUT",
                 headers: {
@@ -65,7 +65,7 @@ class SongCard extends Component {
     }
 
     render() {
-        let { title, artist, album, art_url, account_type, player_connected } = this.props;
+        let { title, artist, album, art_url, type, account_type, player_connected } = this.props;
 
         const listen_button = (account_type === 'premium' && !player_connected) ? 
             <Popup
@@ -82,7 +82,7 @@ class SongCard extends Component {
         return (
             <Card centered raised>
                 <Card.Content>
-                    <Popup content='Create a post' position='top center' trigger={<Button floated='right' icon='plus' onClick={this.makePost}/>}/>
+                    {type === 'track' ? <Popup content='Create a post' position='top center' trigger={<Button floated='right' icon='plus' onClick={this.makePost}/>}/> : null}
                     <Card.Header>{title}</Card.Header>
                     <Card.Meta>{album + ' - ' + artist}</Card.Meta>
                     <Image src={art_url}/>
