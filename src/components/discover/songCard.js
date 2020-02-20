@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Button, Image, Icon } from 'semantic-ui-react'
+import { Card, Button, Image, Icon, Popup } from 'semantic-ui-react'
 
 
 
@@ -54,7 +54,7 @@ class SongCard extends Component {
         return (
             <Card centered raised>
                 <Card.Content>
-                    <Button floated='right' icon='plus' onClick={this.makePost}/>
+                    <Popup content='Create a post' position='top center' trigger={<Button floated='right' icon='plus' onClick={this.makePost}/>}/>
                     <Card.Header>{title}</Card.Header>
                     <Card.Meta>{album + ' - ' + artist}</Card.Meta>
                     <Image src={art_url}/>

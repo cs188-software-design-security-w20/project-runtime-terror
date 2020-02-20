@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid, Search, Header, Divider, Button } from 'semantic-ui-react'
+import { Container, Grid, Search, Header, Divider, Button, Menu, Image, Popup, Card } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
@@ -35,9 +35,9 @@ export class Discover extends Component {
       _token: (token) ? token : getToken,
       deviceId: "",
       error: "",
-      trackName: "Track Name",
-      artistName: "Artist Name",
-      albumName: "Album Name",
+      trackName: undefined,
+      artistName: undefined,
+      albumName: undefined,
       playing: false,
       position: 0,
       duration: 1,
@@ -62,8 +62,8 @@ export class Discover extends Component {
   }
 
   getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
+    let hashParams = {};
+    let e, r = /([^&;=]+)=?([^&;]*)/g,
         q = window.location.hash.substring(1);
     e = r.exec(q)
     while (e) {
@@ -180,7 +180,7 @@ export class Discover extends Component {
   }
 
   checkForPlayer_driver(){
-    this.playerCheckInterval = setInterval(() => this.checkForPlayer(), 1000);
+    this.playerCheckInterval = setInterval(() => this.checkForPlayer(), 10);
   }
 
   createEventHandlers() {
@@ -232,19 +232,19 @@ export class Discover extends Component {
     }
   }
 
-  onPrevClick() {
+  onPrevClick = () => {
     if(this.state.player_connected){
       this.player.previousTrack();
     }
   }
   
-  onPlayClick() {
+  onPlayClick = () => {
     if(this.state.player_connected){
       this.player.togglePlay();
     }
   }
   
-  onNextClick() {
+  onNextClick = () => {
     if(this.state.player_connected){
       this.player.nextTrack();
     }
@@ -275,11 +275,11 @@ export class Discover extends Component {
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
 
-    var searchResults = []
-    var newAlbums = []
+    let searchResults = []
+    let newAlbums = []
     const recents = []
     const top = []
-    var i;
+    let i;
 
     // TODO: get number of stars and place for last argument
     if (results !== 'undefined') {
@@ -344,10 +344,39 @@ export class Discover extends Component {
         newAlbums.push(new SongInfo(title, artist, "", art_url, 0, url, create_url, access_token, uri, deviceid, type))
       }
     }
-    
 
+    let player = [
+    <Button key={0} inverted icon='backward' onClick={this.onPrevClick}></Button>,
+    <Button key={1} inverted icon={(playing) ? 'pause' : 'play'} onClick={this.onPlayClick}></Button>,
+    <Button key={2} inverted icon='forward' onClick={this.onNextClick}></Button>,
+    <Popup key={3} trigger={<Menu.Item>{trackName}</Menu.Item>} position='bottom center'>
+    <Popup.Content>
+      <Card centered raised>
+      <Card.Content>
+          <Card.Header>{trackName}</Card.Header>
+          <Card.Meta>{albumName + ' - ' + artistName}</Card.Meta>
+          <Image src={albumArt}/>
+      </Card.Content>
+      </Card>
+    </Popup.Content>
+  </Popup>,
+  ]
+    
     return (
-      <div>
+      <div className='Discover'>
+        { // Top bar for player
+          <Menu inverted>
+            {
+            (this.state.loggedIn && (!this.state.player_connected || !trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
+              <Menu.Item onClick={() => this.checkForPlayer_driver()}>
+                Launch Web Player
+              </Menu.Item>
+              :
+              player
+            }
+          </Menu>
+        }
+
         <Divider hidden />
         <Grid centered>
           <Search fluid
@@ -359,44 +388,7 @@ export class Discover extends Component {
             />
         </Grid>
 
-        <a href='http://localhost:8888' > Login to Spotify </a>
-        
-        <div>
-          Now Playing: { this.state.nowPlaying.name }
-        </div>
-        <div>
-          <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} alt='' />
-        </div>
-
-        { this.state.loggedIn ?
-          <Button onClick={() => this.getNowPlaying()}>
-            Check Now Playing
-          </Button>
-          :
-          null
-        }
-
-        { this.state.loggedIn ? 
-          <Button onClick={() => this.checkForPlayer_driver()}>
-            Launch Web Player
-          </Button>
-          :
-          null
-        }
-        
-        <div>
-          <p>Artist: {artistName}</p>
-          <p>Track: {trackName}</p>
-          <p>Album: {albumName}</p>
-          <p>
-            <button onClick={() => this.onPrevClick()}>Previous</button>
-            <button onClick={() => this.onPlayClick()}>{playing ? "Pause" : "Play"}</button>
-            <button onClick={() => this.onNextClick()}>Next</button>
-          </p>
-        </div>
-        <div>
-          <img src={albumArt} style={{ height: 150}}/>
-        </div> 
+        <br/>
 
         {(searchResults.length !== 0) ? 
           <SongSection
@@ -428,6 +420,7 @@ export class Discover extends Component {
         }
 
         <br/>
+
       </div>
 
     )
