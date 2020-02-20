@@ -328,7 +328,7 @@ export class Discover extends Component {
         let title = results[i].name
         let artist = results[i].type === 'track' ? results[i].artists[0].name : results[i].type === 'playlist' ? results[i].owner.display_name : results[i].type === 'album' ? results[i].artists[0].name : ''
         let album = results[i].type === 'track' ? results[i].album.name : ''
-        let art_url = results[i].type === 'artist' || results[i].type === 'playlist' || results[i].type === 'album' ? results[i].images[0].url : results[i].album.images[0].url
+        let art_url = results[i].type === 'artist' || results[i].type === 'playlist' || results[i].type === 'album' ? (results[i].images.length > 0 ? results[i].images[0].url : '') : results[i].album.images[0].url
         let url = results[i].external_urls.spotify
         let access_token = _token
         let uri = results[i].uri
