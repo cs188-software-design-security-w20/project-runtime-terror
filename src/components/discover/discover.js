@@ -4,6 +4,8 @@ import { Container, Grid, Search, Header, Divider, Button } from 'semantic-ui-re
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
+import {makeCancellable} from '../../cancellablePromise';
+
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
@@ -31,14 +33,35 @@ export class Discover extends Component {
       results: [],
       newReleases: [],
       recentlyPlayed: [],
-      topTracks: []
-    }
+      topTracks: [],
 
+      nowPlayingPromise: null,
+      newReleasesPromise: null,
+      recentSongsPromise: null,
+      topTracksPromise: null,
+      searchTracksPromise: null
+    }
+  }
+
+  componentDidMount() {
     this.getNewReleases();
     this.getRecentSongs();
     this.getTopTracks();
+    console.log('discover')
   }
-  
+
+  componentWillUnmount() {
+    const {nowPlayingPromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise} = this.state
+    const promises = [nowPlayingPromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise]
+    console.log(promises)
+    for (let i = 0; i < promises.length; i++) {
+      console.log(promises[i])
+      if (promises[i]) {
+        promises[i].cancel()
+      }
+    }
+    
+  }
 
   getHashParams() {
     var hashParams = {};
@@ -53,8 +76,11 @@ export class Discover extends Component {
   }
 
   getNowPlaying(){
-    spotifyApi.getMyCurrentPlaybackState()
-      .then((response) => {
+
+    let playbackStatus = makeCancellable(spotifyApi.getMyCurrentPlaybackState())
+    this.setState({nowPlayingPromise: playbackStatus})
+
+    playbackStatus.promise.then((response) => {
         if (response === '' || response.item.name === null) {
           this.setState({
             nowPlaying: { 
@@ -75,8 +101,11 @@ export class Discover extends Component {
   }
 
   getNewReleases(){
-    spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' })
-      .then((data) => {
+
+    let newReleases = makeCancellable(spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' }))
+    this.setState({newReleasesPromise: newReleases})
+
+    newReleases.promise.then((data) => {
         this.setState({newReleases: data.albums.items});
         return data;
       }, function(err) {
@@ -85,14 +114,15 @@ export class Discover extends Component {
           if (window.confirm("Token Expired! Please re-login to Spotify!")) {
             window.location.href = 'http://localhost:8888';
           }
-
         }
       });
   }
   
   getRecentSongs(){
-    spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 })
-      .then((data) => {
+    let recentSongs = makeCancellable(spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 }))
+    this.setState({recentSongsPromise: recentSongs})
+
+    recentSongs.promise.then((data) => {
         this.setState({
           recentlyPlayed: data.items
         });
@@ -103,8 +133,10 @@ export class Discover extends Component {
   }
 
   getTopTracks(){
-    spotifyApi.getMyTopTracks({ limit: 5 })
-      .then((data) => {
+    let topTracks = makeCancellable(spotifyApi.getMyTopTracks({ limit: 5 }))
+    this.setState({topTracksPromise: topTracks})
+
+    topTracks.promise.then((data) => {
         this.setState({
           topTracks: data.items
         });
@@ -115,8 +147,11 @@ export class Discover extends Component {
   }
 
   searchTracks(keyword){
-    spotifyApi.searchTracks(keyword)
-      .then((data) => {
+
+    let tracks = makeCancellable(spotifyApi.searchTracks(keyword))
+    this.setState({searchTracksPromise: tracks})
+
+    tracks.promise.then((data) => {
         this.setState({searchedTracks: data});
         return data;
       }, function(err) {

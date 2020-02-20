@@ -12,9 +12,12 @@ export class Feed extends Component {
     users: null,
   }
 
+  componentDidMount() {
+    console.log('feed')
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     let newPosts = {}
-    console.log(nextProps)
     if (nextProps.explorePosts !== prevState.explorePosts) {
       Object.assign(newPosts, {explorePosts: nextProps.explorePosts})
     }
@@ -24,7 +27,6 @@ export class Feed extends Component {
     if (nextProps.users !== undefined && nextProps.users !== prevState.users) {
       Object.assign(newPosts, {users: nextProps.users})
     }
-    console.log(newPosts)
     return (newPosts.length !== 0) ? newPosts : null;
   }
 
