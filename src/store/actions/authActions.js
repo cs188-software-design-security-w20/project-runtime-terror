@@ -182,7 +182,7 @@ export const updateToken = (uId, token) => {
     firestore.collection('users').doc(uId).update({
       spotify_token: token
     }).then(() => {
-      dispatch({ type: 'SPOTIFY_TOKEN', uId, token })
+      dispatch({ type: 'SPOTIFY_TOKEN', uId })
     }).catch((err) => {
       dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
     })

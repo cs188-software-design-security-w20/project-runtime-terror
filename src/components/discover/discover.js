@@ -25,7 +25,6 @@ export class Discover extends Component {
 
     this.state = {
       loggedIn: token ? true : false,
-      nowPlaying: { name: 'Not Checked', albumArt: '' },
       searchedTracks: [],
       value: '',
       results: [],
@@ -43,8 +42,10 @@ export class Discover extends Component {
       duration: 1,
       albumArt: "",
       player_connected: false,
+      account_type: 'free',
     }
 
+    this.getAccountType();
     this.getNewReleases();
     this.getRecentSongs();
     this.getTopTracks();
@@ -73,26 +74,17 @@ export class Discover extends Component {
     return hashParams;
   }
 
-  getNowPlaying(){
-    spotifyApi.getMyCurrentPlaybackState()
-      .then((response) => {
-        if (response === '' || response.item.name === null) {
-          this.setState({
-            nowPlaying: { 
-                name: 'Nothing is playing right now', 
-                albumArt: ''
-              }
-          })
-        }
-        else {
-          this.setState({
-            nowPlaying: { 
-                name: response.item.name, 
-                albumArt: response.item.album.images[0].url
-              }
-          })
-        }
-      })
+  getAccountType(){
+    spotifyApi.getMe()
+      .then((data) => {
+        this.setState({account_type: data.product});
+        return data;
+      }, function(err) {
+        console.log("Something went wrong!", err);
+        if (err.status === 401)
+          if (window.confirm("Token Expired! Please re-login to Spotify!")) 
+            window.location.href = 'http://localhost:8888';
+      });
   }
 
   getNewReleases(){
@@ -102,12 +94,6 @@ export class Discover extends Component {
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
-        if (err.status === 401) {
-          if (window.confirm("Token Expired! Please re-login to Spotify!")) {
-            window.location.href = 'http://localhost:8888';
-          }
-
-        }
       });
   }
   
@@ -273,7 +259,6 @@ export class Discover extends Component {
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
     if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
       this.props.updateToken(this.props.auth.uid, this.props.location.hash)
-
 
     let searchResults = []
     let newAlbums = []

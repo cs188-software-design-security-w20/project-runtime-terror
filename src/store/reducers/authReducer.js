@@ -87,7 +87,7 @@ const authReducer = (state = initState, action) => {
       return state
 
     case 'SPOTIFY_TOKEN': 
-      console.log('Updated user spotify token', action.uId, action.token)
+      console.log('Updated user spotify token', action.uId)
       return state
 
     case 'SPOTIFY_TOKEN_ERROR': 
