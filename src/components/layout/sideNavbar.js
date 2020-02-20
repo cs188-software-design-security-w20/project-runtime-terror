@@ -50,7 +50,7 @@ class SideNavbar extends Component {
 
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
-                <Menu fixed='top'>
+                <Menu inverted fixed='top'>
                     <Menu.Item icon='th list' onClick={() => {this.setState({visible: !this.state.visible})}}/>
                     <Menu.Item header onClick={() => {this.load(this.FEED)}}>Runtime Terror</Menu.Item>
                     <Menu.Item onClick={() => {this.load(this.PROFILE)}}>{imageTop}</Menu.Item>
