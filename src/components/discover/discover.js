@@ -45,6 +45,7 @@ export class Discover extends Component {
       account_type: 'free',
     }
 
+    this.getAccountType();
     this.getNewReleases();
     this.getRecentSongs();
     this.getTopTracks();
@@ -143,7 +144,7 @@ export class Discover extends Component {
     }, 20)
 
   }
-  
+
   checkForPlayer() {
     const { _token } = this.state;
   
@@ -157,7 +158,6 @@ export class Discover extends Component {
       });
       this.createEventHandlers();
   
-     
       this.player.connect();
       const player_connected = true;
       this.setState({player_connected});
@@ -177,9 +177,7 @@ export class Discover extends Component {
     this.player.on('account_error', e => { console.error(e); });
     this.player.on('playback_error', e => { console.error(e); });
   
-    // Playback status updates
-    this.player.on('player_state_changed', state => { console.log(state); });
-  
+    // Playback status updates  
     this.player.on('player_state_changed', state => this.onStateChanged(state));
     // Ready
     this.player.on('ready', async data => {
@@ -252,7 +250,7 @@ export class Discover extends Component {
 
 
   render() {
-    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId, account_type } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
@@ -261,6 +259,7 @@ export class Discover extends Component {
 
     let searchResults = []
     let newAlbums = []
+    let launch_player = () => this.checkForPlayer_driver()
     const recents = []
     const top = []
     let i;
@@ -278,7 +277,7 @@ export class Discover extends Component {
         let deviceid = deviceId
         let type = results[i].type
         let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-        searchResults.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type))
+        searchResults.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     } 
 
@@ -294,7 +293,7 @@ export class Discover extends Component {
         let deviceid = deviceId
         let type = recentlyPlayed[i].track.type
         let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-        recents.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type))
+        recents.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
 
@@ -310,7 +309,7 @@ export class Discover extends Component {
         let deviceid = deviceId
         let type = topTracks[i].type
         let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-        top.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type))
+        top.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
 
@@ -325,7 +324,7 @@ export class Discover extends Component {
         let deviceid = deviceId
         let type = newReleases[i].type
         let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
-        newAlbums.push(new SongInfo(title, artist, "", art_url, url, create_url, access_token, uri, deviceid, type, account_type))
+        newAlbums.push(new SongInfo(title, artist, "", art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
 
