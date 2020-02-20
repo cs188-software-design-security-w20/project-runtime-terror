@@ -40,6 +40,10 @@ code {
   min-width: 100%;
 }
 
+.top_menu {
+  max-height: 46px;
+}
+
 #sidebar {
   padding-top: 3px;
   min-width: 100%;
