@@ -367,13 +367,16 @@ export class Discover extends Component {
         { // Top bar for player
           <Menu inverted>
             {
-            (this.state.loggedIn && (!this.state.player_connected || !trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
+            (this.state.loggedIn && !(this.state.player_connected && trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
               <Menu.Item onClick={() => this.checkForPlayer_driver()}>
                 Launch Web Player
               </Menu.Item>
               :
               player
             }
+            <Menu.Item href='http://localhost:8888' target='noreferrer noopener' position='right'>
+              Sign in to spotify
+            </Menu.Item>
           </Menu>
         }
 
