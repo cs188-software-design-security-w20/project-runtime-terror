@@ -369,7 +369,7 @@ export class Discover extends Component {
       },
       body: JSON.stringify({
         "device_ids": [ deviceId ],
-        "play": true,
+        "play": false,
       }),
     });
   }
