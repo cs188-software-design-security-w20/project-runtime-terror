@@ -77,7 +77,8 @@ export class Discover extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.token_hash === undefined || prevState.token_hash !== nextProps.location.hash) {
+    if (nextProps.auth && !nextProps.auth.isEmpty && nextProps.location && nextProps.location.hash !== '' && prevState.token_hash != nextProps.location.hash) {
+      nextProps.updateToken(nextProps.auth.uid, nextProps.location.hash)
       return {
         token_hash: nextProps.location.hash
       }
@@ -337,7 +338,6 @@ export class Discover extends Component {
         playing,
         albumArt,
       })
-      console.log(currentTrack.id)
     }
   }
 
@@ -375,7 +375,6 @@ export class Discover extends Component {
   }
 
   createPost = () => { 
-    console.log(this.state.trackUrl)
     if (this.state.trackUrl === undefined) {
       window.location.href = base_url + "/createpost/#SongName=" + this.state.trackName
     }
@@ -386,12 +385,6 @@ export class Discover extends Component {
 
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases, trackName, trackUrl, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
-
-    // Adds token to user's database
-    // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
-    if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
-      if (this.state.token_hash != this.props.location.hash)
-        this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
     let searchResults = []
     let newAlbums = []
