@@ -12,7 +12,7 @@ say about top music.
 
 
 ### Installation / Usage
-**Prefered Method**
+**Prefered Method**  
 1) Clone Repository and Run Spotify Server
 ```sh
 $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
@@ -25,7 +25,7 @@ $ node app.js
 2) Access via Website: //TODO
 
 
-**Backup Method**
+**Backup Method**\
 Requires [node.js](https://nodejs.org/) to run.
 Clone repository, install the dependencies and start the server.
 
