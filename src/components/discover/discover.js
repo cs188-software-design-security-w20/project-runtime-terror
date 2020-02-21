@@ -40,6 +40,7 @@ export class Discover extends Component {
       deviceId: "",
       error: "",
       trackName: undefined,
+      trackUrl: undefined,
       artistName: undefined,
       albumName: undefined,
       playing: false,
@@ -47,6 +48,7 @@ export class Discover extends Component {
       duration: 1,
       albumArt: "",
       player_connected: false,
+      token_hash: undefined,
       account_type: 'free',
       accountTypePromise: null,
       newReleasesPromise: null,
@@ -74,6 +76,17 @@ export class Discover extends Component {
     this.props.history.listen(this.onRouteChange.bind(this));
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.token_hash === undefined || prevState.token_hash !== nextProps.location.hash) {
+      return {
+        token_hash: nextProps.location.hash
+      }
+    }
+    else {
+      return null;
+    }
+  }
+
   componentWillUnmount() {
     console.log('unmounting!')
     const {accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise} = this.state
@@ -99,6 +112,7 @@ export class Discover extends Component {
 
   getAccountType(){
     let accountType = makeCancellable(spotifyApi.getMe())
+    
     this.setState({accountTypePromise: accountType}, () => {
       console.log('getting type!')
       accountType.promise.then((data) => {
@@ -108,8 +122,8 @@ export class Discover extends Component {
       }, function(err) {
         console.log("Something went wrong!", err);
         if (err.status === 401)
-          if (window.confirm("Token Expired! Please re-login to Spotify!")) 
-            window.location.href = 'http://localhost:8888';
+            if (window.confirm("Token Expired! Please re-login to Spotify!")) 
+              window.location.href = 'http://localhost:8888';
       })
     })
   }
@@ -304,8 +318,10 @@ export class Discover extends Component {
         position,
         duration,
       } = state.track_window;
-      const trackName = currentTrack.name;
-      const albumName = currentTrack.album.name;
+
+      const trackName = currentTrack.name
+      const trackUrl = "https://open.spotify.com/tracks/" + currentTrack.id
+      const albumName = currentTrack.album.name
       const artistName = currentTrack.artists
         .map(artist => artist.name)
         .join(", ");
@@ -315,11 +331,13 @@ export class Discover extends Component {
         position,
         duration,
         trackName,
+        trackUrl: trackUrl,
         albumName,
         artistName,
         playing,
-        albumArt
-      });
+        albumArt,
+      })
+      console.log(currentTrack.id)
     }
   }
 
@@ -356,14 +374,24 @@ export class Discover extends Component {
     });
   }
 
+  createPost = () => { 
+    console.log(this.state.trackUrl)
+    if (this.state.trackUrl === undefined) {
+      window.location.href = base_url + "/createpost/#SongName=" + this.state.trackName
+    }
+    else {
+      window.location.href = base_url + "/createpost/#SongName=" + this.state.trackName + "&SongUrl=" + this.state.trackUrl
+    }
+  }
 
   render() {
-    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
+    const { value, results, recentlyPlayed, topTracks, newReleases, trackName, trackUrl, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
 
     // Adds token to user's database
     // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
     if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
-      this.props.updateToken(this.props.auth.uid, this.props.location.hash)
+      if (this.state.token_hash != this.props.location.hash)
+        this.props.updateToken(this.props.auth.uid, this.props.location.hash)
 
     let searchResults = []
     let newAlbums = []
@@ -449,6 +477,11 @@ export class Discover extends Component {
       </Card>
     </Popup.Content>
   </Popup>,
+  <Popup key={4} trigger={<Button inverted icon='plus' onClick={this.createPost}/>} position='bottom center'>
+    <Popup.Content>
+      Create post
+    </Popup.Content>
+  </Popup>
   ]
     
     return (
@@ -463,7 +496,7 @@ export class Discover extends Component {
               :
               player : null
             }
-            <Menu.Item href='http://localhost:8888' target='noreferrer noopener' position='right'>
+            <Menu.Item href='http://localhost:8888' position='right'>
               Sign In To Spotify
             </Menu.Item>
           </Menu>
