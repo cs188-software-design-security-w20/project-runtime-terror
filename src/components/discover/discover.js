@@ -320,7 +320,7 @@ export class Discover extends Component {
       } = state.track_window;
 
       const trackName = currentTrack.name
-      const trackUrl = "https://open.spotify.com/tracks/" + currentTrack.id
+      const trackUrl = "https://open.spotify.com/track/" + currentTrack.id
       const albumName = currentTrack.album.name
       const artistName = currentTrack.artists
         .map(artist => artist.name)
