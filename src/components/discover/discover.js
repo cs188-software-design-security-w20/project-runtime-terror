@@ -446,13 +446,13 @@ export class Discover extends Component {
       <div className='Discover'>
         { // Top bar for player
           <Menu inverted>
-            {
+            { this.state.account_type === 'premium' ? // Show Player only if User is Premium on Spotify
             (this.state.loggedIn && !(this.state.player_connected && trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
               <Menu.Item onClick={() => this.checkForPlayer_driver()}>
                 Launch Web Player
               </Menu.Item>
               :
-              player
+              player : null
             }
             <Menu.Item href='http://localhost:8888' target='noreferrer noopener' position='right'>
               Sign In To Spotify
