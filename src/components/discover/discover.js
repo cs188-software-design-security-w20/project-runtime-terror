@@ -66,7 +66,6 @@ export class Discover extends Component {
   
   initialize() {
     if (this.state.loggedIn) {
-      clearInterval(this.initializeOnceMounted)
       const token = this.state._token;
       const getToken = spotifyApi.getAccessToken();
       if (token) {
@@ -85,7 +84,7 @@ export class Discover extends Component {
   }
 
   componentDidMount() {
-    this.initializeOnceMounted = setInterval(() => this.initialize(), 20);
+    this.initialize()
   }
 
   componentWillUnmount() {
@@ -434,12 +433,12 @@ export class Discover extends Component {
       }
     }
 
-    let player = [
-      <Menu.Item position="left">
+    let player =
+      <Menu.Item>
         <Grid>
-          <Button key={0} inverted icon='backward' onClick={this.onPrevClick}></Button>,
-          <Button key={1} inverted icon={(playing) ? 'pause' : 'play'} onClick={this.onPlayClick}></Button>,
-          <Button key={2} inverted icon='forward' onClick={this.onNextClick}></Button>,
+          <Button key={0} inverted icon='backward' onClick={this.onPrevClick}></Button>
+          <Button key={1} inverted icon={(playing) ? 'pause' : 'play'} onClick={this.onPlayClick}></Button>
+          <Button key={2} inverted icon='forward' onClick={this.onNextClick}></Button>
           <Popup key={3} trigger={<Menu.Item>{trackName}</Menu.Item>} position='bottom center'>
           <Popup.Content>
             <Card centered raised>
@@ -450,7 +449,7 @@ export class Discover extends Component {
             </Card.Content>
             </Card>
           </Popup.Content>
-          </Popup>,
+          </Popup>
           <Popup key={4} trigger={<Button inverted icon='plus' onClick={this.createPost}/>} position='bottom center'>
             <Popup.Content>
               Create post
@@ -458,7 +457,6 @@ export class Discover extends Component {
           </Popup>
         </Grid>
       </Menu.Item>
-    ]
     
     return (
       <div className='Discover'>
@@ -466,16 +464,24 @@ export class Discover extends Component {
           <Menu inverted>
             { this.state.account_type === 'premium' ? // Show Player only if User is Premium on Spotify
             (this.state.loggedIn && !(this.state.player_connected && trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
-              <Menu.Item position="left" onClick={() => this.checkForPlayer_driver()}>
+              <Menu.Item onClick={() => this.checkForPlayer_driver()}>
                 Launch Web Player
               </Menu.Item>
               :
-              player : <Menu.Item position="left">Hello, There!</Menu.Item>
-            }
+              player : null
+          }
 
-            <Menu.Item>
+
+            <Menu.Item position='right' onClick={()=>console.log()}>
               <Grid centered>
-                <Button.Group labeled >
+                <Search fluid
+                  showNoResults={false}
+                  size='large'
+                  onSearchChange={_.debounce(this.handleSearchChange, 20)}
+                  value={value}
+                  placeholder={'Search For ' + this.state.searchButton.charAt(0).toUpperCase() + this.state.searchButton.slice(1) + '..'}
+                  />
+                <Button.Group labeled>
                   <Button positive={this.state.searchButton === 'songs'} secondary content='Song' onClick={() => this.setState({value: '', results: [], searchButton: 'songs'})} />
                   <Button positive={this.state.searchButton === 'artists'} secondary content='Artist' onClick={() => this.setState({value: '', results: [], searchButton: 'artists'})} />
                   <Button positive={this.state.searchButton === 'albums'} secondary content='Album' onClick={() => this.setState({value: '', results: [], searchButton: 'albums'})} />
@@ -485,28 +491,15 @@ export class Discover extends Component {
             </Menu.Item>
 
             { this.state.loggedIn ?
-              <Menu.Item href='http://localhost:8888' position='right'>
+              <Menu.Item href='http://localhost:8888'>
                 Spotify Status: <p style={{color: 'green', whiteSpace: 'pre'}}> {this.state.account_type.charAt(0).toUpperCase() + this.state.account_type.slice(1)} </p>
               </Menu.Item> :
-              <Menu.Item href='http://localhost:8888' position='right'>
-                Sign In To Spotify
+              <Menu.Item href='http://localhost:8888'>
+                Sign In To Spotify  
               </Menu.Item>
             }
           </Menu>
         }
-
-        <Divider hidden />
-        <Grid centered>
-          <Search fluid
-            showNoResults={false}
-            size='large'
-            onSearchChange={_.debounce(this.handleSearchChange, 20)}
-            value={value}
-            placeholder={'Search For ' + this.state.searchButton.charAt(0).toUpperCase() + this.state.searchButton.slice(1) + '..'}
-            />
-        </Grid>
-        <Divider hidden />
-
 
         {(searchResults.length !== 0) ? 
           <SongSection
