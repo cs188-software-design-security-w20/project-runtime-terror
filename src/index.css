@@ -42,10 +42,11 @@ code {
 
 .top_menu {
   max-height: 46px;
+  min-height: 46px;
 }
 
 #sidebar {
-  padding-top: 3px;
+  padding-top: 4px;
   min-width: 100%;
   min-height: 100%;
 }
