@@ -48,6 +48,8 @@ class SideNavbar extends Component {
                 <Label color='teal'>{requests_num} </Label>
             </Menu.Item> : null
 
+        console.log('rendering sidebar with ', this.props.content)
+
         const output = (
             <div className='fullsize_div' id='sidebar_2'>
                 <Menu fixed='top' className='top_menu'>

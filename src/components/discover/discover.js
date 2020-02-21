@@ -4,6 +4,8 @@ import { Container, Grid, Search, Header, Divider, Button, Menu, Image, Popup, C
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
+import {makeCancellable} from '../../cancellablePromise';
+
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
@@ -47,13 +49,15 @@ export class Discover extends Component {
       albumArt: "",
       player_connected: false,
       account_type: 'free',
+      accountTypePromise: null,
+      newReleasesPromise: null,
+      recentSongsPromise: null,
+      topTracksPromise: null,
+      searchTracksPromise: null,
+      searchArtistsPromise: null,
+      searchAlbumsPromise: null,
+      searchPlaylistsPromise: null,
     }
-
-    this.getAccountType();
-    this.getNewReleases();
-    this.getRecentSongs();
-    this.getTopTracks();
-    this.playerCheckInterval = null;
   }
   
   componentDidMount() {
@@ -63,6 +67,24 @@ export class Discover extends Component {
   onRouteChange(route) {
     if(this.state.player_connected){
       this.player.disconnect();
+    }
+  }
+  componentDidMount() {
+    this.getAccountType();
+    this.getNewReleases();
+    this.getRecentSongs();
+    this.getTopTracks();
+    this.playerCheckInterval = null;
+  }
+
+  componentWillUnmount() {
+    const {accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise} = this.state
+    const promises = [accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise]
+    for (let i = 0; i < promises.length; i++) {
+      console.log(promises[i])
+      if (promises[i]) {
+        promises[i].cancel()
+      }
     }
   }
 
@@ -79,90 +101,106 @@ export class Discover extends Component {
   }
 
   getAccountType(){
-    spotifyApi.getMe()
-      .then((data) => {
-        this.setState({account_type: data.product});
-        return data;
-      }, function(err) {
-        console.log("Something went wrong!", err);
-        if (err.status === 401)
-          if (window.confirm("Token Expired! Please re-login to Spotify!")) 
-            window.location.href = 'http://localhost:8888';
-      });
+    let accountType = makeCancellable(spotifyApi.getMe())
+    this.setState({accountTypePromise: accountType})
+
+    accountType.promise.then((data) => {
+      this.setState({account_type: data.product});
+      return data;
+    }, function(err) {
+      console.log("Something went wrong!", err);
+      if (err.status === 401)
+        if (window.confirm("Token Expired! Please re-login to Spotify!")) 
+          window.location.href = 'http://localhost:8888';
+    });
   }
 
   getNewReleases(){
-    spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' })
-      .then((data) => {
-        this.setState({newReleases: data.albums.items});
-        return data;
-      }, function(err) {
-        console.log("Something went wrong!", err);
-      });
+    let newReleases = makeCancellable(spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' }))
+    this.setState({newReleasesPromise: newReleases})
+
+    newReleases.promise.then((data) => {
+      this.setState({newReleases: data.albums.items});
+      return data;
+    }, function(err) {
+      console.log("Something went wrong!", err);
+    });
   }
   
   getRecentSongs(){
-    spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 })
-      .then((data) => {
-        this.setState({
-          recentlyPlayed: data.items
-        });
-        return data;
-      }, function(err) {
-        console.log("Something went wrong!", err);
+    let recentSongs = makeCancellable(spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 }))
+    this.setState({recentSongsPromise: recentSongs})
+
+    recentSongs.promise.then((data) => {
+      this.setState({
+        recentlyPlayed: data.items
       });
+      return data;
+    }, function(err) {
+      console.log("Something went wrong!", err);
+    });
   }
 
   getTopTracks(){
-    spotifyApi.getMyTopTracks({ limit: 5 })
-      .then((data) => {
-        this.setState({
-          topTracks: data.items
-        });
-        return data;
-      }, function(err) {
-        console.log("Something went wrong!", err);
+    let topTracks = makeCancellable(spotifyApi.getMyTopTracks({ limit: 5 }))
+    this.setState({topTracksPromise: topTracks})
+
+    topTracks.promise.then((data) => {
+      this.setState({
+        topTracks: data.items
       });
+      return data;
+    }, function(err) {
+      console.log("Something went wrong!", err);
+    });
   }
 
   searchTracks(keyword){
-    spotifyApi.searchTracks(keyword)
-      .then((data) => {
-        this.setState({searchedTracks: data});
-        return data;
-      }, function(err) {
-        console.error(err);
-      });
+    let tracks = makeCancellable(spotifyApi.searchTracks(keyword))
+    this.setState({searchTracksPromise: tracks})
+
+    tracks.promise.then((data) => {
+      this.setState({searchedTracks: data});
+      return data;
+    }, function(err) {
+      console.error(err);
+    });
   }
 
   searchAlbums(keyword){
-    spotifyApi.searchAlbums(keyword)
-      .then((data) => {
-        this.setState({searchedAlbums: data});
-        return data;
-      }, function(err) {
-        console.error(err);
-      });
+    let albums = makeCancellable(spotifyApi.searchAlbums(keyword))
+    this.setState({searchAlbumsPromise: albums})
+
+    albums.promise.then((data) => {
+      this.setState({searchedAlbums: data});
+      return data;
+    }, function(err) {
+      console.error(err);
+    });
   }
 
   searchArtists(keyword){
-    spotifyApi.searchArtists(keyword)
-      .then((data) => {
-        this.setState({searchedArtists: data});
-        return data;
-      }, function(err) {
-        console.error(err);
-      });
+    let artists = makeCancellable(spotifyApi.searchArtists(keyword))
+    this.setState({searchArtistsPromise: artists})
+
+    artists.promise.then((data) => {
+      this.setState({searchedArtists: data});
+      return data;
+    }, function(err) {
+      console.error(err);
+    });
   }
 
   searchPlaylists(keyword){
-    spotifyApi.searchPlaylists(keyword)
-      .then((data) => {
-        this.setState({searchedPlaylists: data});
-        return data;
-      }, function(err) {
-        console.error(err);
-      });
+    let playlists = makeCancellable(spotifyApi.searchPlaylists(keyword))
+    this.setState({searchPlaylistsPromise: playlists})
+    
+    playlists.promise.then((data) => {
+      this.setState({searchedPlaylists: data});
+      return data;
+    }, function(err) {
+      console.error(err);
+    });
   }
 
   handleSearchChange = (e, { value }) => {

@@ -46,17 +46,6 @@ export class Profile extends Component {
     return data
   }
 
-  profile_panes = [
-    {
-      menuItem: 'Posts',
-      render: () => <Tab.Pane>{this.state.posts_content}</Tab.Pane>
-    },
-    {
-      menuItem: 'Friends',
-      render: () => <Tab.Pane>{this.state.friends_content}</Tab.Pane>
-    }
-  ]
-
   navigate = (destination) => {
     this.setState({
       navigate: destination
@@ -95,7 +84,7 @@ export class Profile extends Component {
     
     const isUser = auth.uid && match.params && auth.uid === match.params.id;
 
-    var friendButton = match && auth ? <Button onClick={() => {this.props.addFriend(match.params.id, auth.uid)}}>Add Friend</Button> : null
+    let friendButton = match && auth ? <Button onClick={() => {this.props.addFriend(match.params.id, auth.uid)}}>Add Friend</Button> : null
     if (auth && curProfileUser && curProfileUser.friends_pending && curProfileUser.friends_pending.includes(auth.uid))
       friendButton = <Button>Friend Request Sent</Button>
     else if (auth && curProfileUser && curProfileUser.friends.includes(auth.uid) && match)
@@ -104,13 +93,24 @@ export class Profile extends Component {
       friendButton = <Button onClick={() => {this.props.acceptFriend(match.params.id, auth.uid)}}>Accept Friend Request</Button>
     
       
-    this.state.posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
-    this.state.friends_content = curProfileUser ? 
+    let posts_content = <div> <PostList posts={curProfilePosts} users={users} /> </div>
+    let friends_content = curProfileUser ? 
           ((currentFriendsList && match && match.params && match.params.id && currentFriendsList.includes(match.params.id)) 
             || (auth && match && match.params && match.params.id && auth["uid"] === match.params.id) ? 
             <div> <FriendList users={users} friends={curProfileUser.friends} /> </div> :
             <div> <FriendList users={users} friends={[]} /> </div>)
              : null
+
+    let profile_panes = [
+    {
+      menuItem: 'Posts',
+      render: () => <Tab.Pane>{posts_content}</Tab.Pane>
+    },
+    {
+      menuItem: 'Friends',
+      render: () => <Tab.Pane>{friends_content}</Tab.Pane>
+    }
+  ]
 
     if (this.state.navigate === '/createpost') {
       return (
@@ -172,7 +172,7 @@ export class Profile extends Component {
               }
             </Segment>
           </GridRow>
-          <GridRow> <GridColumn width={16}> <Tab panes={this.profile_panes}/> </GridColumn> </GridRow>
+          <GridRow> <GridColumn width={16}> <Tab panes={profile_panes}/> </GridColumn> </GridRow>
         </Grid>
       </div>
     )
