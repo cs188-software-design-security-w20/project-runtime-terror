@@ -173,7 +173,7 @@ export const rejectFriend = (friend_user_id, logged_in_user_id) => {
   }
 }
 
-export const updateToken = (uId, token) => {
+export const updateToken = (uId, token, callback) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
 
     // Make async call to database
@@ -186,5 +186,7 @@ export const updateToken = (uId, token) => {
     }).catch((err) => {
       dispatch({ type: 'SPOTIFY_TOKEN_ERROR', err })
     })
+
+    callback();
   }
 }
