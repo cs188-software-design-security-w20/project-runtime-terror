@@ -60,28 +60,25 @@ export class Discover extends Component {
     }
   }
   
-  componentDidMount() {
-    this.props.history.listen(this.onRouteChange.bind(this));
-  }
-
   onRouteChange(route) {
     if(this.state.player_connected){
       this.player.disconnect();
     }
   }
+  
   componentDidMount() {
     this.getAccountType();
     this.getNewReleases();
     this.getRecentSongs();
     this.getTopTracks();
     this.playerCheckInterval = null;
+    this.props.history.listen(this.onRouteChange.bind(this));
   }
 
   componentWillUnmount() {
     const {accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise} = this.state
     const promises = [accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise]
     for (let i = 0; i < promises.length; i++) {
-      console.log(promises[i])
       if (promises[i]) {
         promises[i].cancel()
       }
@@ -377,7 +374,7 @@ export class Discover extends Component {
         let uri = results[i].uri
         let deviceid = deviceId
         let type = results[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
         searchResults.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     } 
@@ -393,7 +390,7 @@ export class Discover extends Component {
         let uri = recentlyPlayed[i].track.uri
         let deviceid = deviceId
         let type = recentlyPlayed[i].track.type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
         recents.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
@@ -409,7 +406,7 @@ export class Discover extends Component {
         let uri = topTracks[i].uri
         let deviceid = deviceId
         let type = topTracks[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
         top.push(new SongInfo(title, artist, album, art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
@@ -424,7 +421,7 @@ export class Discover extends Component {
         let uri = newReleases[i].uri
         let deviceid = deviceId
         let type = newReleases[i].type
-        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url + "&access_token=" + spotifyApi.getAccessToken()
+        let create_url = base_url + "/createpost/#SongName=" + title + "&SongUrl=" + url
         newAlbums.push(new SongInfo(title, artist, "", art_url, url, create_url, access_token, uri, deviceid, type, account_type, player_connected))
       }
     }
