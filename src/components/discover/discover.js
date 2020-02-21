@@ -46,6 +46,7 @@ export class Discover extends Component {
       searchArtistsPromise: null,
       searchAlbumsPromise: null,
       searchPlaylistsPromise: null,
+      initializeOnceMounted: undefined
     }
   }
   
@@ -66,6 +67,7 @@ export class Discover extends Component {
   
   initialize() {
     if (this.state.loggedIn) {
+      clearInterval(this.initializeOnceMounted)
       const token = this.state._token;
       const getToken = spotifyApi.getAccessToken();
       if (token) {
@@ -84,7 +86,7 @@ export class Discover extends Component {
   }
 
   componentDidMount() {
-    this.initialize()
+    this.initializeOnceMounted = setInterval(() => this.initialize(), 20)
   }
 
   componentWillUnmount() {
@@ -95,6 +97,8 @@ export class Discover extends Component {
         promises[i].cancel()
       }
     }
+    if (this.initializeOnceMounted !== undefined)
+      clearInterval(this.initializeOnceMounted)
   }
 
   getAccountType(){
