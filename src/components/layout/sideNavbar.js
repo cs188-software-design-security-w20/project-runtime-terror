@@ -59,7 +59,7 @@ class SideNavbar extends Component {
                 </Menu>
                 <div id='sidebar'>
                 <Sidebar.Pushable as={Segment}>
-                    <Sidebar as={Menu} animation={'slide along'} direction={'left'} icon='labeled' inverted vertical visible={this.state.visible} width='thin'>
+                    <Sidebar as={Menu} animation={'slide along'} direction={'left'} icon='labeled' inverted vertical visible={this.state.visible} onHide={()=>this.setState({visible: false})} width='thin'>
                         <Menu.Item onClick={() => {this.load(this.PROFILE)}} name='Profile'><br/>{imageBot}<br/>Profile</Menu.Item>,
                         <Menu.Item onClick={() => {this.load(this.DISCOVER)}} icon='map' name='Discover'/>,
                         <Menu.Item onClick={() => {this.load(this.FEED)}} icon='sitemap' name='Feed'/>,
