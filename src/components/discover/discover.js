@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Container, Grid, Search, Header, Divider, Button, Menu, Image, Popup, Card } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
-import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
 import { makeCancellable } from './cancellablePromise';
 import _ from 'lodash'
@@ -14,18 +13,8 @@ export class Discover extends Component {
   constructor(){
     super();
 
-    const params = this.getHashParams();
-    const token = params.access_token;
-    const getToken = spotifyApi.getAccessToken();
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
-    else if(getToken){
-      spotifyApi.setAccessToken(getToken);
-    }
-
     this.state = {
-      loggedIn: token ? true : false,
+      loggedIn: false,
       searchButton: 'songs',
       searchedTracks: [],
       searchedArtists: [],
@@ -36,7 +25,7 @@ export class Discover extends Component {
       newReleases: [],
       recentlyPlayed: [],
       topTracks: [],
-      _token: (token) ? token : getToken,
+      _token: '',
       deviceId: "",
       error: "",
       trackName: undefined,
@@ -59,23 +48,46 @@ export class Discover extends Component {
     }
   }
   
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.profile.isLoaded && nextProps.profile.spotify_token && prevState._token !== nextProps.profile.spotify_token) {
+      return { _token: nextProps.profile.spotify_token, loggedIn: true }
+    }
+    else {
+      return null
+    }
+  }
+
   onRouteChange(route) {
     if(this.state.player_connected){
       this.player.disconnect();
     }
   }
   
+  initialize() {
+    if (this.state.loggedIn) {
+      clearInterval(this.initializeOnceMounted)
+      const token = this.state._token;
+      const getToken = spotifyApi.getAccessToken();
+      if (token) {
+        spotifyApi.setAccessToken(token);
+      }
+      else if(getToken){
+        spotifyApi.setAccessToken(getToken);
+      }
+      this.getAccountType();
+      this.getNewReleases();
+      this.getRecentSongs();
+      this.getTopTracks();
+      this.playerCheckInterval = null;
+      this.props.history.listen(this.onRouteChange.bind(this));
+    } 
+  }
+
   componentDidMount() {
-    this.getAccountType();
-    this.getNewReleases();
-    this.getRecentSongs();
-    this.getTopTracks();
-    this.playerCheckInterval = null;
-    this.props.history.listen(this.onRouteChange.bind(this));
+    this.initializeOnceMounted = setInterval(() => this.initialize(), 20);
   }
 
   componentWillUnmount() {
-    console.log('unmounting!')
     const {accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise} = this.state
     const promises = [accountTypePromise, newReleasesPromise, recentSongsPromise, topTracksPromise, searchTracksPromise, searchArtistsPromise, searchAlbumsPromise, searchPlaylistsPromise]
     for (let i = 0; i < promises.length; i++) {
@@ -85,24 +97,10 @@ export class Discover extends Component {
     }
   }
 
-  getHashParams() {
-    let hashParams = {};
-    let e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    e = r.exec(q)
-    while (e) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
-       e = r.exec(q);
-    }
-    return hashParams;
-  }
-
   getAccountType(){
     let accountType = makeCancellable(spotifyApi.getMe())
     this.setState({accountTypePromise: accountType}, () => {
-      console.log('getting type!')
       accountType.promise.then((data) => {
-        console.log('type!')
         this.setState({account_type: data.product});
         return data;
       }, function(err) {
@@ -117,9 +115,7 @@ export class Discover extends Component {
   getNewReleases(){
     let newReleases = makeCancellable(spotifyApi.getNewReleases({ limit : 5, offset: 0, country: 'US' }))
     this.setState({newReleasesPromise: newReleases}, () => {
-      console.log('getting releases!')
       newReleases.promise.then((data) => {
-        console.log('releases!')
         this.setState({newReleases: data.albums.items});
         return data;
       }, function(err) {
@@ -131,9 +127,7 @@ export class Discover extends Component {
   getRecentSongs(){
     let recentSongs = makeCancellable(spotifyApi.getMyRecentlyPlayedTracks({ limit: 5 }))
     this.setState({recentSongsPromise: recentSongs}, () => {
-      console.log('getting recents!')
       recentSongs.promise.then((data) => {
-        console.log('recents!')
         this.setState({
           recentlyPlayed: data.items
         });
@@ -147,9 +141,7 @@ export class Discover extends Component {
   getTopTracks(){
     let topTracks = makeCancellable(spotifyApi.getMyTopTracks({ limit: 5 }))
     this.setState({topTracksPromise: topTracks}, () => {
-      console.log('getting top!')
       topTracks.promise.then((data) => {
-        console.log('top!')
         this.setState({
           topTracks: data.items
         });
@@ -360,11 +352,6 @@ export class Discover extends Component {
   render() {
     const { value, results, recentlyPlayed, topTracks, newReleases, trackName, artistName, albumName, albumArt, playing, _token, deviceId, account_type, player_connected } = this.state
 
-    // Adds token to user's database
-    // TODO: Update only when token is changed. Right now it updates everytime discover is loaded
-    if (this.props.auth && !this.props.auth.isEmpty && this.props.location && this.props.location.hash !== '')
-      this.props.updateToken(this.props.auth.uid, this.props.location.hash)
-
     let searchResults = []
     let newAlbums = []
     const recents = []
@@ -551,16 +538,9 @@ class SongSection extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    auth: state.firebase.auth
+    profile: state.firebase.profile
   }
 }
 
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToken: (uId, token) => dispatch(updateToken(uId, token))
-  }
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Discover)
+export default connect(mapStateToProps)(Discover)

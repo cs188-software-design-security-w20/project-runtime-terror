@@ -3,6 +3,7 @@ import { Redirect, Switch, Route, BrowserRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Menu, Loader } from 'semantic-ui-react';
 import Discover from './components/discover/discover'
+import TokenHandler from './components/discover/tokenHandler'
 import Login from './components/layout/login/login'
 import Feed from './components/feed/feed'
 import Profile from './components/profile/profile'
@@ -30,13 +31,14 @@ class App extends Component {
     const { auth } = this.props
     const content = (
       <Switch>
-        <Route exact path='/'       component={Feed} />
-        <Route path='/login'        component={Login} />
-        <Route path='/discover/'    component={Discover} />
-        <Route path='/profile/:id'  component={Profile} />
-        <Route path='/createpost'   component={CreatePost} />
-        <Route path='/requests'     component={PendingList} />
-        <Route                      component={NotFound} />
+        <Route exact path='/'           component={Feed} />
+        <Route path='/login'            component={Login} />
+        <Route path='/discover'         component={Discover} />
+        <Route path='/tokenHandler'     component={TokenHandler} />
+        <Route path='/profile/:id'      component={Profile} />
+        <Route path='/createpost'       component={CreatePost} />
+        <Route path='/requests'         component={PendingList} />
+        <Route                          component={NotFound} />
       </Switch>
     )
 
