@@ -435,26 +435,30 @@ export class Discover extends Component {
     }
 
     let player = [
-    <Button key={0} inverted icon='backward' onClick={this.onPrevClick}></Button>,
-    <Button key={1} inverted icon={(playing) ? 'pause' : 'play'} onClick={this.onPlayClick}></Button>,
-    <Button key={2} inverted icon='forward' onClick={this.onNextClick}></Button>,
-    <Popup key={3} trigger={<Menu.Item>{trackName}</Menu.Item>} position='bottom center'>
-    <Popup.Content>
-      <Card centered raised>
-      <Card.Content>
-          <Card.Header>{trackName}</Card.Header>
-          <Card.Meta>{albumName + ' - ' + artistName}</Card.Meta>
-          <Image src={albumArt}/>
-      </Card.Content>
-      </Card>
-    </Popup.Content>
-  </Popup>,
-  <Popup key={4} trigger={<Button inverted icon='plus' onClick={this.createPost}/>} position='bottom center'>
-    <Popup.Content>
-      Create post
-    </Popup.Content>
-  </Popup>
-  ]
+      <Menu.Item position="left">
+        <Grid>
+          <Button key={0} inverted icon='backward' onClick={this.onPrevClick}></Button>,
+          <Button key={1} inverted icon={(playing) ? 'pause' : 'play'} onClick={this.onPlayClick}></Button>,
+          <Button key={2} inverted icon='forward' onClick={this.onNextClick}></Button>,
+          <Popup key={3} trigger={<Menu.Item>{trackName}</Menu.Item>} position='bottom center'>
+          <Popup.Content>
+            <Card centered raised>
+            <Card.Content>
+                <Card.Header>{trackName}</Card.Header>
+                <Card.Meta>{albumName + ' - ' + artistName}</Card.Meta>
+                <Image src={albumArt}/>
+            </Card.Content>
+            </Card>
+          </Popup.Content>
+          </Popup>,
+          <Popup key={4} trigger={<Button inverted icon='plus' onClick={this.createPost}/>} position='bottom center'>
+            <Popup.Content>
+              Create post
+            </Popup.Content>
+          </Popup>
+        </Grid>
+      </Menu.Item>
+    ]
     
     return (
       <div className='Discover'>
@@ -462,12 +466,24 @@ export class Discover extends Component {
           <Menu inverted>
             { this.state.account_type === 'premium' ? // Show Player only if User is Premium on Spotify
             (this.state.loggedIn && !(this.state.player_connected && trackName !== undefined)) ? // Show "button" when logged in and either we have not started the web player, or the webplayer hasn't loaded yet (checked based on song name)
-              <Menu.Item onClick={() => this.checkForPlayer_driver()}>
+              <Menu.Item position="left" onClick={() => this.checkForPlayer_driver()}>
                 Launch Web Player
               </Menu.Item>
               :
-              player : null
+              player : <Menu.Item position="left">Hello, There!</Menu.Item>
             }
+
+            <Menu.Item>
+              <Grid centered>
+                <Button.Group labeled >
+                  <Button positive={this.state.searchButton === 'songs'} secondary content='Song' onClick={() => this.setState({value: '', results: [], searchButton: 'songs'})} />
+                  <Button positive={this.state.searchButton === 'artists'} secondary content='Artist' onClick={() => this.setState({value: '', results: [], searchButton: 'artists'})} />
+                  <Button positive={this.state.searchButton === 'albums'} secondary content='Album' onClick={() => this.setState({value: '', results: [], searchButton: 'albums'})} />
+                  <Button positive={this.state.searchButton === 'playlists'} secondary content='Playlist' onClick={() => this.setState({value: '', results: [], searchButton: 'playlists'})} />
+                </Button.Group>
+              </Grid>
+            </Menu.Item>
+
             { this.state.loggedIn ?
               <Menu.Item href='http://localhost:8888' position='right'>
                 Spotify Status: <p style={{color: 'green', whiteSpace: 'pre'}}> {this.state.account_type.charAt(0).toUpperCase() + this.state.account_type.slice(1)} </p>
@@ -490,16 +506,7 @@ export class Discover extends Component {
             />
         </Grid>
         <Divider hidden />
-        <Grid centered>
-          <Button.Group labeled >
-            <Button positive={this.state.searchButton === 'songs'} secondary content='Song' onClick={() => this.setState({value: '', results: [], searchButton: 'songs'})} />
-            <Button positive={this.state.searchButton === 'artists'} secondary content='Artist' onClick={() => this.setState({value: '', results: [], searchButton: 'artists'})} />
-            <Button positive={this.state.searchButton === 'albums'} secondary content='Album' onClick={() => this.setState({value: '', results: [], searchButton: 'albums'})} />
-            <Button positive={this.state.searchButton === 'playlists'} secondary content='Playlist' onClick={() => this.setState({value: '', results: [], searchButton: 'playlists'})} />
-          </Button.Group>
-        </Grid>
 
-        <br/>
 
         {(searchResults.length !== 0) ? 
           <SongSection
@@ -529,11 +536,8 @@ export class Discover extends Component {
           song_info={newAlbums}
         /> : null
         }
-
         <br/>
-
       </div>
-
     )
   }
 }
