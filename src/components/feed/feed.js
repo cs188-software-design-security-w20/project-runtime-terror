@@ -12,10 +12,6 @@ export class Feed extends Component {
     users: null,
   }
 
-  componentDidMount() {
-    console.log('feed')
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     let newPosts = {}
     if (nextProps.explorePosts !== prevState.explorePosts) {
