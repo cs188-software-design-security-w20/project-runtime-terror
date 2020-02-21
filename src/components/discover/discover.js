@@ -4,8 +4,7 @@ import { Container, Grid, Search, Header, Divider, Button, Menu, Image, Popup, C
 import SongGrid, { SongInfo } from './songGrid'
 import { updateToken } from '../../store/actions/authActions'
 import SpotifyWebApi from 'spotify-web-api-js';
-import {makeCancellable} from '../../cancellablePromise';
-
+import { makeCancellable } from './cancellablePromise';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();

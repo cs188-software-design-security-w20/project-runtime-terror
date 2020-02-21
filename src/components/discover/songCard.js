@@ -22,7 +22,6 @@ class SongCard extends Component {
     }
 
     playSong(){
-        // TODO: start song on player
         let { _token, url, uri, deviceid, type, account_type } = this.props;
 
         if (account_type === 'premium') {          
