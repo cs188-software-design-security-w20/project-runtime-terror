@@ -23,7 +23,6 @@ class SignUp extends Component {
 
     render() {
         const { authError } = this.props
-        // TODO: Update the authError to be red
         return (
             <Form onSubmit={this.submit}>
                 <Form.Field>
@@ -35,7 +34,7 @@ class SignUp extends Component {
                 <Form.Field>
                     <Form.Input label='Name' id='name' placeholder='Enter your name' onChange={this.change}/>
                 </Form.Field>
-                {authError ? <p>{authError}</p> : null}
+                {authError ? <p style={{color: 'red'}}>{authError}</p> : null}
                 <Form.Field control={Button}>
                     <ButtonContent>
                         <Icon name='headphones'/>

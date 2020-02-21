@@ -468,9 +468,14 @@ export class Discover extends Component {
               :
               player : null
             }
-            <Menu.Item href='http://localhost:8888' position='right'>
-              Sign In To Spotify
-            </Menu.Item>
+            { this.state.loggedIn ?
+              <Menu.Item href='http://localhost:8888' position='right'>
+                Spotify Status: <p style={{color: 'green', whiteSpace: 'pre'}}> {this.state.account_type.charAt(0).toUpperCase() + this.state.account_type.slice(1)} </p>
+              </Menu.Item> :
+              <Menu.Item href='http://localhost:8888' position='right'>
+                Sign In To Spotify
+              </Menu.Item>
+            }
           </Menu>
         }
 
@@ -481,7 +486,7 @@ export class Discover extends Component {
             size='large'
             onSearchChange={_.debounce(this.handleSearchChange, 20)}
             value={value}
-            placeholder={'Search for ' + this.state.searchButton + '..'}
+            placeholder={'Search For ' + this.state.searchButton.charAt(0).toUpperCase() + this.state.searchButton.slice(1) + '..'}
             />
         </Grid>
         <Divider hidden />
