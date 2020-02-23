@@ -112,8 +112,8 @@ export class Discover extends Component {
       }, function(err) {
         console.log("Something went wrong!", err);
         if (err.status === 401)
-            if (window.confirm("Token Expired! Please re-login to Spotify!")) 
-              window.location.href = 'http://localhost:8888';
+          if (window.confirm("Token Expired! Please re-login to Spotify!")) 
+            window.location.href = 'http://localhost:8888';
       })
     })
   }
@@ -504,6 +504,8 @@ export class Discover extends Component {
             }
           </Menu>
         }
+
+        {!this.state.loggedIn && this.state._token === '' ? <p align='center' style={{color: '#139bd1', fontSize: '26px'}}>Welcome! <br /> Please log into Spotify to get started.</p> : null}
 
         {(searchResults.length !== 0) ? 
           <SongSection
