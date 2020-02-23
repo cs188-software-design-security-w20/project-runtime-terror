@@ -37,7 +37,7 @@ export class Discover extends Component {
       duration: 1,
       albumArt: "",
       player_connected: false,
-      account_type: 'free',
+      account_type: 'Not Logged In. Click to authenticate!',
       accountTypePromise: null,
       newReleasesPromise: null,
       recentSongsPromise: null,
@@ -106,7 +106,8 @@ export class Discover extends Component {
     
     this.setState({accountTypePromise: accountType}, () => {
       accountType.promise.then((data) => {
-        this.setState({account_type: data.product});
+        const product = data.product === 'premium' ? 'premium' : 'free' // Since it may return 'open', which is also free
+        this.setState({account_type: product});
         return data;
       }, function(err) {
         console.log("Something went wrong!", err);
@@ -461,7 +462,6 @@ export class Discover extends Component {
           </Popup>
         </Grid>
       </Menu.Item>
-    console.log(this.state.account_type)
     return (
       <div className='Discover'>
         { // Top bar for player
