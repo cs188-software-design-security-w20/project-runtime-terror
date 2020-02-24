@@ -12,7 +12,10 @@ say about top music.
 
 
 ### Installation / Usage
-Requires [node.js](https://nodejs.org/) to run.
+Requires [node.js](https://nodejs.org/) to run.\
+We have two ways of running our web application: 1) accessing it via webpage, or 2) running locally.\
+It is recommended to use method 1 as it represents our software as it would be during production.\
+Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
 **Prefered Method** (web branch)
 1) Clone web branch and run Spotify server
