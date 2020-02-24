@@ -14,18 +14,18 @@ say about top music.
 ### Installation / Usage
 Requires [node.js](https://nodejs.org/) to run.
 
-**Prefered Method** (master Branch)
-1) Clone Repository and Run Spotify Server
+**Prefered Method** (web branch)
+1) Clone web branch and run Spotify server
 
     Run Script
     ```sh
-    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+    $ git clone -b web https://github.com/cs188-software-design-security-w20/project-runtime-terror
     $ cd project-runtime-terror
     $ ./run.sh
     ```
     **OR**
     ```sh
-    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+    $ git clone -b web https://github.com/cs188-software-design-security-w20/project-runtime-terror
     $ cd project-runtime-terror/spotify_server
     $ npm install
     $ cd authorization_code
@@ -35,10 +35,10 @@ Requires [node.js](https://nodejs.org/) to run.
 2) Access via Website: https://princes25.github.io/Mutter/
 
 
-**Backup Method** (localhost branch)\
-Clone localhost branch and Run the Script
+**Backup Method** (master branch)\
+Clone repository and run the script
 ```sh
-$ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
+$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
 $ cd project-runtime-terror
 $ ./run.sh
 ```
@@ -47,7 +47,7 @@ $ ./run.sh
 
 1) Clone and install dependencies
     ```sh
-    $ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
+    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
     $ cd project-runtime-terror
     $ npm install
     ```
