@@ -18,25 +18,8 @@ It is recommended to use method 1 as it represents our software as it would be d
 Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
 **Prefered Method** (master branch)  
-* Access via Website: https://princes25.github.io/Mutter/
+Access via Website: https://princes25.github.io/Mutter/
 
-**OR**
-
-*  Clone and run locally (Uses development database, read backup method)
-    ```sh
-    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
-    $ cd project-runtime-terror
-    $ ./run.sh
-    ```
-
-    **OR**
-
-    ```sh
-    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
-    $ cd project-runtime-terror
-    $ npm install
-    $ npm start
-    ```
 
 **Backup Method** (localhost branch)\
 This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production.
