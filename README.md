@@ -17,31 +17,16 @@ We have two ways of running our web application: 1) accessing it via webpage, or
 It is recommended to use method 1 as it represents our software as it would be during production.\
 Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
-**Prefered Method** (web branch)
-1) Clone web branch and run Spotify server
-
-    Run Script
-    ```sh
-    $ git clone -b web https://github.com/cs188-software-design-security-w20/project-runtime-terror
-    $ cd project-runtime-terror
-    $ ./run.sh
-    ```
-    **OR**
-    ```sh
-    $ git clone -b web https://github.com/cs188-software-design-security-w20/project-runtime-terror
-    $ cd project-runtime-terror/spotify_server
-    $ npm install
-    $ cd authorization_code
-    $ node app.js
-    ```
-
-2) Access via Website: https://princes25.github.io/Mutter/
+**Prefered Method** (master branch)  
+Access via Website: https://princes25.github.io/Mutter/
 
 
-**Backup Method** (master branch)\
+**Backup Method** (localhost branch)\
+This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production.
+
 Clone repository and run the script
 ```sh
-$ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+$ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
 $ cd project-runtime-terror
 $ ./run.sh
 ```
@@ -50,7 +35,7 @@ $ ./run.sh
 
 1) Clone and install dependencies
     ```sh
-    $ git clone https://github.com/cs188-software-design-security-w20/project-runtime-terror
+    $ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
     $ cd project-runtime-terror
     $ npm install
     ```
