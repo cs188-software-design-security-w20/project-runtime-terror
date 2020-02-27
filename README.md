@@ -17,11 +17,11 @@ We have two ways of running our web application: 1) accessing it via webpage, or
 It is recommended to use method 1 as it represents our software as it would be during production.\
 Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
-**Prefered Method** (master branch)
+**Prefered Method** (master branch)  
 Access via Website: https://princes25.github.io/Mutter/
 
 
-**Backup Method** (localhost branch)\
+**Backup Method** (localhost branch)
 
 Clone repository and run the script
 ```sh
