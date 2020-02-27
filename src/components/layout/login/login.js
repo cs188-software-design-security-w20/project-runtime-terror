@@ -5,6 +5,9 @@ import { Image, Grid, GridRow } from 'semantic-ui-react'
 import LoginForm from './loginForm'
 
 
+const path = process.env.NODE_ENV === "production" ? '' : '/';
+
+
 class Login extends Component {
 
     render() {
@@ -15,7 +18,7 @@ class Login extends Component {
         else {
             return (
                 <Grid padded centered>
-                    <Image src="/img/silhouette_2.png"/>
+                    <Image src={path + "img/silhouette_2.png"}/>
                     <GridRow> <LoginForm/> </GridRow>
                 </Grid>
             )

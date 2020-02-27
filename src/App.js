@@ -49,7 +49,7 @@ class App extends Component {
 
     return (
       this.state.isLoading ? <div className='fullsize_div'> <Loader active size='massive'>Loading</Loader> </div>:
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
           { showLogin }
       </BrowserRouter>
     );

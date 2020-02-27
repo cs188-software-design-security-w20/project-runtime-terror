@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Loader } from 'semantic-ui-react'
+import { Loader, Header, Icon, Divider } from 'semantic-ui-react'
 import { updateToken } from '../../store/actions/authActions'
 
 
@@ -11,8 +11,11 @@ export class TokenHandler extends Component {
 
     const params = this.getHashParams();
     const token = params.access_token;
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error')
     this.state = {
-      token: token ? token : ''
+      token: token ? token : '',
+      error: error ? error : ''
     }
   }
 
@@ -29,7 +32,8 @@ export class TokenHandler extends Component {
   }
 
   componentDidMount() {
-    this.handleToken()
+    if (!this.state.error)
+      this.handleToken()
   }
 
   handleToken() {
@@ -42,8 +46,19 @@ export class TokenHandler extends Component {
 
   render() {
     return (
-      <div className='fullsize_div'> 
-        <Loader active size='massive'>Redirecting...</Loader> 
+      <div className='fullsize_div'>
+        { this.state.error ? 
+          <Header as='h2' icon textAlign='center'>
+            <Divider hidden />
+            <Divider hidden />
+            <Divider hidden />
+            <Icon name='exclamation triangle' />
+            An access error occured
+          </Header>
+          :
+          <Loader active size='massive'>Redirecting...</Loader>
+        }
+         
       </div>
     )
   }
@@ -61,6 +76,37 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updateToken: (uId, token, callback) => dispatch(updateToken(uId, token, callback))
   }
+}
+
+
+export function redirectUrlToSpotifyForLogin() {
+	const CLIENT_ID = '1811b81e027e4dd291a2505a456b74e8'
+  const REDIRECT_URI = 
+    process.env.NODE_ENV === "production"
+    ? 'https://princes25.github.io/Mutter/tokenhandler'
+    : 'http://localhost:3000/tokenhandler';
+
+	const scopes = [
+    'user-read-private',
+    'user-read-email',
+    'user-read-playback-state',
+    'app-remote-control',
+    'user-read-recently-played',
+    'user-top-read',
+    'user-modify-playback-state',
+    'user-read-currently-playing',
+    'streaming'
+  ];
+  
+	return (
+		"https://accounts.spotify.com/authorize?client_id=" +
+		CLIENT_ID +
+		"&redirect_uri=" +
+		encodeURIComponent(REDIRECT_URI) +
+		"&scope=" +
+		encodeURIComponent(scopes.join(" ")) +
+    "&response_type=token"
+	);
 }
 
 

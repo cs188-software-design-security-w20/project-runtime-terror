@@ -2,13 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Container, Grid, Search, Header, Divider, Button, Menu, Image, Popup, Card } from 'semantic-ui-react'
 import SongGrid, { SongInfo } from './songGrid'
+import { redirectUrlToSpotifyForLogin } from './tokenHandler.js'
 import SpotifyWebApi from 'spotify-web-api-js';
 import { makeCancellable } from './cancellablePromise';
 import _ from 'lodash'
 
 const spotifyApi = new SpotifyWebApi();
-const base_url = "http://localhost:3000"
+const spotifyUrl = redirectUrlToSpotifyForLogin()
+const base_url = 
+  process.env.NODE_ENV === "production"
+  ? 'https://princes25.github.io/Mutter'
+  : 'http://localhost:3000';
 
+  
 export class Discover extends Component {
   constructor(){
     super();
@@ -113,7 +119,7 @@ export class Discover extends Component {
         console.log("Something went wrong!", err);
         if (err.status === 401)
           if (window.confirm("Token Expired! Please re-login to Spotify!")) 
-            window.location.href = 'http://localhost:8888';
+            window.location.href = spotifyUrl;
       })
     })
   }
@@ -495,10 +501,10 @@ export class Discover extends Component {
             </Menu.Item>
 
             { this.state.loggedIn ?
-              <Menu.Item href='http://localhost:8888'>
+              <Menu.Item href={spotifyUrl}>
                 Spotify Status: <p style={{color: (this.state.account_type === 'premium') ? 'gold' : 'green', whiteSpace: 'pre'}}> {this.state.account_type.charAt(0).toUpperCase() + this.state.account_type.slice(1)} </p>
               </Menu.Item> :
-              <Menu.Item href='http://localhost:8888'>
+              <Menu.Item href={spotifyUrl}>
                 Sign In To Spotify  
               </Menu.Item>
             }
