@@ -482,7 +482,7 @@ export class Discover extends Component {
           }
 
 
-            <Menu.Item position='right' onClick={()=>console.log()}>
+            <Menu.Item position='right'}>
               <Grid centered>
                 <Search fluid
                   showNoResults={false}
