@@ -13,6 +13,7 @@ say about top music.
 
 ### Installation / Usage
 Requires [node.js](https://nodejs.org/) to run.\
+Tested on latest versions of Chrome and Firefox. If it doesn't work on your browser, try using one of those.  
 We have two ways of running our web application: 1) accessing it via webpage, or 2) running locally.\
 It is recommended to use method 1 as it represents our software as it would be during production.\
 Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
@@ -22,7 +23,7 @@ Access via Website: https://princes25.github.io/Mutter/
 
 
 **Backup Method** (localhost branch)\
-This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production.
+This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production. This method also uses a local Spotify server which constantly listens to authorization requests on port 8888.
 
 Clone repository and run the script
 ```sh
