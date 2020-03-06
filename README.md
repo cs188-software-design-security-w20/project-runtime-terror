@@ -51,9 +51,8 @@ $ ./run.sh
     $ node app.js
     ```
 
-3) Run App
+3) Run app from project's root directory
     ```sh
-    $ cd ../..
     $ npm start
     ```
 
