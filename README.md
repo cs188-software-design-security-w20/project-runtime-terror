@@ -1,18 +1,16 @@
+### Team Runtime Terror
+* Shabnam Bahmanyar
+* Henry Bui
+* Brian Du
+* Tejas Kasturi
+* Prabhjot Singh
+
+### Mission
 Our mission is to bring people together through music and provide anyone a platform to express
 themselves in their own music review blog. Become a music critic and see what others have to
 say about top music.
 
-
-### Technologies
-* [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
-* [node.js](http://nodejs.org) - Evented I/O for the backend
-* [Firebase](https://firebase.google.com/) - Backend: Database and Authorization
-* [Spotify Web API](https://developer.spotify.com/documentation/web-api/) - For authenticating and integrating with Spotify
-* [Semantic UI](https://react.semantic-ui.com/) - Frontend Framework
-
-
-### Installation / Usage
-Requires [node.js](https://nodejs.org/) to run.\
+### How To Run?
 Tested on latest versions of Chrome and Firefox. If it doesn't work on your browser, try using one of those.  
 We have two ways of running our web application: 1) accessing it via webpage, or 2) running locally.\
 It is recommended to use method 1 as it represents our software as it would be during production.\
@@ -20,10 +18,14 @@ Method 2 is provided as backup in case method 1 is unavailable or a feature is u
 
 **Preferred Method** (master branch)  
 Access via Website: https://princes25.github.io/Mutter/
+No pulling or installing necessary!
 
+**OR**
 
 **Backup Method** (localhost branch)\
 This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production. This method also uses a local Spotify server which constantly listens to authorization requests on port 8888.
+
+Requires [node.js](https://nodejs.org/) to run.
 
 Clone repository and run the script
 ```sh
@@ -55,14 +57,12 @@ $ ./run.sh
     $ npm start
     ```
 
-
-### Team
-* Shabnam Bahmanyar
-* Henry Bui
-* Brian Du
-* Tejas Kasturi
-* Prabhjot Singh
-
+### Technologies
+* [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
+* [node.js](http://nodejs.org) - Evented I/O for the backend
+* [Firebase](https://firebase.google.com/) - Backend: Database and Authorization
+* [Spotify Web API](https://developer.spotify.com/documentation/web-api/) - For authenticating and integrating with Spotify
+* [Semantic UI](https://react.semantic-ui.com/) - Frontend Framework
 
 ### Directory Structure
     project-runtime-terror
