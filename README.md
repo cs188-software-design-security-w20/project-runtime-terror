@@ -25,7 +25,7 @@ No pulling or installing necessary!
 **Backup Method** (localhost branch)\
 This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production. This method also uses a local Spotify server which constantly listens to authorization requests on port 8888.
 
-Requires [node.js](https://nodejs.org/) to run.\
+Requires [node.js](https://nodejs.org/) to run.
 
 Clone repository and run the script
 ```sh
