@@ -11,6 +11,10 @@ themselves in their own music review blog. Become a music critic and see what ot
 say about top music.
 
 ### How To Run?
+Tested on latest versions of Chrome and Firefox. If it doesn't work on your browser, try using one of those.  
+We have two ways of running our web application: 1) accessing it via webpage, or 2) running locally.\
+It is recommended to use method 1 as it represents our software as it would be during production.\
+Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
 **Preferred Method** (master branch)  
 Access via Website: https://princes25.github.io/Mutter/
@@ -21,12 +25,7 @@ No pulling or installing necessary!
 **Backup Method** (localhost branch)\
 This method provides API keys so that you don't have to setup your own database. However, this database is only for developmental purposes and thus differs from the one used in production. This method also uses a local Spotify server which constantly listens to authorization requests on port 8888.
 
-*Installation / Usage*
 Requires [node.js](https://nodejs.org/) to run.\
-Tested on latest versions of Chrome and Firefox. If it doesn't work on your browser, try using one of those.  
-We have two ways of running our web application: 1) accessing it via webpage, or 2) running locally.\
-It is recommended to use method 1 as it represents our software as it would be during production.\
-Method 2 is provided as backup in case method 1 is unavailable or a feature is unusable.
 
 Clone repository and run the script
 ```sh
@@ -34,6 +33,29 @@ $ git clone -b localhost https://github.com/cs188-software-design-security-w20/p
 $ cd project-runtime-terror
 $ ./run.sh
 ```
+
+**OR**
+
+1) Clone and install dependencies
+    ```sh
+    $ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
+    $ cd project-runtime-terror
+    $ npm install
+    ```
+
+2) Run Spotify Server
+    ```sh
+    $ cd spotify_server
+    $ npm install
+    $ cd authorization_code
+    $ node app.js
+    ```
+
+3) Run App
+    ```sh
+    $ cd ../..
+    $ npm start
+    ```
 
 ### Technologies
 * [React](https://reactjs.org/) - Frontend: JavaScript library for creating web apps!
