@@ -35,7 +35,7 @@ $ ./run.sh
 ```
 
 **OR**
-
+ 
 1) Clone and install dependencies
     ```sh
     $ git clone -b localhost https://github.com/cs188-software-design-security-w20/project-runtime-terror
@@ -51,9 +51,8 @@ $ ./run.sh
     $ node app.js
     ```
 
-3) Run App
+3) Run app from project's root directory
     ```sh
-    $ cd ../..
     $ npm start
     ```
 
